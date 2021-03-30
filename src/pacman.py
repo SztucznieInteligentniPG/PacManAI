@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time as time
 from pygame.locals import *
 Pacman = [pygame.image.load('img/pacman1.png'),
           pygame.image.load('img/pacman2.png'),
