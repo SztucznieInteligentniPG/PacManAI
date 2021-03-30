@@ -18,7 +18,7 @@ class World:
         self.grid = [[None]*x]*y
         pass
 
-    def update(self, deltaTime: time.struct_time):
+    def update(self, deltaTime: float):
         pass
 
     def addActor(self, actor: Actor):

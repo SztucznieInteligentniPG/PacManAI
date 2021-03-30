@@ -13,5 +13,5 @@ class Actor(Entity, ABC):
         self.controller = controller
 
     @abstractmethod
-    def update(self, world: World, deltaTime: time.struct_time):
+    def update(self, world: World, deltaTime: float):
         pass
