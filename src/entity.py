@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from world import World
 from position import Position
 
 class Entity(ABC):
@@ -15,7 +14,8 @@ class Entity(ABC):
         pass
 
     @abstractmethod
-    def destroy(self, world: World):  # usunięcie siebie ze świata
+    def destroy(self, world):  # usunięcie siebie ze świata
+        from world import World
         pass
 
     @abstractmethod

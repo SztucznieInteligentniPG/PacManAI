@@ -1,6 +1,6 @@
-import direction as Direction
-import texture as Texture
+from direction import Direction
 from position import Position
+from texture import Texture
 
 
 class Model:
@@ -9,9 +9,9 @@ class Model:
     position: Position
     offset: Position
 
-    def __init__(self, direction, texture, position, offset):
+    def __init__(self, direction: Direction, texture: Texture, position: Position, offset:Position):
         self.direction = direction
         self.texture = texture
-        self.pos = position
-        self.off = offset
+        self.position = position
+        self.offset = offset
 
