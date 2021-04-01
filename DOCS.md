@@ -1,7 +1,7 @@
 # Porpozycja/pierwszy draft dokumentacji
 
 ## Niepewność
-  * W zależności od specyfiki języka python implementacja poszczegulnych elementów programu może się różnić i używać analogicznych wersji konceptów programowania np:
+  * W zależności od specyfiki języka python implementacja poszczególnych elementów programu może się różnić i używać analogicznych wersji konceptów programowania np:
     - może nie być takich rzeczy jak enum
     - może nie być takich keyword'ów jak abstract
   * Terminy te są idealistyczne i nie koniecznie muszą działać tak samo pod spodem; liczy się efekt
@@ -98,6 +98,14 @@ Nazwy klas metod i pól mogą ulec zmianie
         - pac man obrócony w lewo/prawo
       * Entity może być rysowany równo z gridem albo pomiędzy polami (Actor gdy się porusza)
 
+### Model()
+  * przechowuje informacje o wyświetlaniu konkretnego obiektu klasy entity
+  * Renderer na podstawie informacji w nim się znajdujących może wyświetlić w oknie gry reprezentację obiektu
+    - Pola:
+      * position klasy Position - pozycję na ekranie (bez dopasowania do grida)
+      * texture z Enuma Texture - odpowiadającą liście grafik składających się na animację danego obiektu
+      * direction z Enuma Direction - odpowiadający za odpowiedni obrót tekstury
+      * offset typu float - przesunięcie, by pozycja znajdowała się na środku tekstury
 
 ## Szczegóły aplikacji
 
