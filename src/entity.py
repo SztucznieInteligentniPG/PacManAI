@@ -1,5 +1,11 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
 from position import Position
+
+if TYPE_CHECKING:
+    from world import World
 
 class Entity(ABC):
     position: Position
@@ -14,8 +20,7 @@ class Entity(ABC):
         pass
 
     @abstractmethod
-    def destroy(self, world):  # usunięcie siebie ze świata
-        from world import World
+    def destroy(self, world: World):  # usunięcie siebie ze świata
         pass
 
     @abstractmethod

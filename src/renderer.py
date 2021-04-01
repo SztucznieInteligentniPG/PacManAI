@@ -6,11 +6,12 @@ from world import World
 
 
 class Renderer:
+    display: pygame.display
 
-    def __init__(self):
-        pass
+    def __init__(self, display: pygame.display):
+        self.display = display
 
-    def renderModel(self, model: Model, display: pygame.display):
+    def renderModel(self, model: Model):
         x = model.position.x
         y = model.position.y
         ox = model.offset.x
@@ -21,17 +22,19 @@ class Renderer:
 
         texture = model.texture.value
         direction = model.direction
+
         if direction is Direction.UP:
             texture = pygame.transform.rotate(texture, 90)
         elif direction == Direction.DOWN:
             texture = pygame.transform.rotate(texture, -90)
         elif direction == Direction.LEFT:
-            texture = pygame.transform.flip(texture, False, True)
-        position = (startX + x*32 - ox*offset, startY + y*32 - oy*offset)
-        display.blit(texture, position)
+            texture = pygame.transform.flip(texture, True, False)
 
-    def render(self, world: World, display: pygame.display):
+        position = (startX + x*32 - ox*offset, startY + y*32 - oy*offset)
+        self.display.blit(texture, position)
+
+    def render(self, world: World):
         for row in world.grid:
-            for en in row:
-                model = en.model()
-                self.renderModel(model, display)
+            for entity in row:
+                model = entity.model()
+                self.renderModel(model, self.display)

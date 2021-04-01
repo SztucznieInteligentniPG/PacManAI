@@ -1,12 +1,13 @@
-import array
-import types
-from entity import Entity
-from actor import Actor
-from position import Position
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
 from world_position import WorldPosition
 
-Row = list[Entity]
-Grid = list[Row]
+if TYPE_CHECKING:
+    from actor import Actor
+    from entity import Entity
+    Row = list[Entity]
+    Grid = list[Row]
 
 
 class World:
