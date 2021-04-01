@@ -1,11 +1,11 @@
-import direction
-import texture
+from direction import Direction
+from texture import Texture
 from position import Position
 
 
 class Model:
-    direction: direction.Direction
-    texture: texture.Texture
+    direction: Direction
+    texture: Texture
     position: Position
     offset: Position
 

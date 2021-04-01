@@ -16,15 +16,21 @@ class Renderer:
         pass
 
     def render(self, model: Model, display: pygame.display, frame):
-            x = model.position.x
-            y = model.position.y
-            texture = self.texture_dic[model.texture.name][frame]
-            dir = model.direction
-            if dir.value == Direction.UP.value:
-                texture = pygame.transform.rotate(texture, 90)
-            elif dir.value == Direction.DOWN.value:
-                texture = pygame.transform.rotate(texture, -90)
-            elif dir.value == Direction.LEFT.value:
-                texture = pygame.transform.flip(texture, False, True)
+        x = model.position.x
+        y = model.position.y
+        ox = model.offset.x
+        oy = model.offset.y
+        startX = 76
+        startY = 76
+        offset = 16
 
-            display.blit(texture, (x, y))
+        texture = self.texture_dic[model.texture.name][frame]
+        direction = model.direction
+        if direction is Direction.UP:
+            texture = pygame.transform.rotate(texture, 90)
+        elif direction == Direction.DOWN:
+            texture = pygame.transform.rotate(texture, -90)
+        elif direction == Direction.LEFT:
+            texture = pygame.transform.flip(texture, False, True)
+        position = (startX + x*32 - ox*offset, startY + y*32 - oy*offset)
+        display.blit(texture, position)

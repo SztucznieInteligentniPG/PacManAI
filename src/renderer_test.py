@@ -3,17 +3,16 @@ import sys
 from model import Model
 from renderer import Renderer
 
-from src.direction import Direction
-from src.position import Position
-from src.texture import Texture
+from direction import Direction
+from position import Position
+from texture import Texture
 
 clock = pygame.time.Clock()
-HEIGHT = 450
-WIDTH = 400
+HEIGHT = 800
+WIDTH = 800
 BLACK = (0, 0, 0)
 
 
-a = Model(Direction.UP, Texture.PACMAN, Position(30, 30), Position(0, 0))
 r = Renderer()
 
 
@@ -29,6 +28,7 @@ def main():
             sys.exit(0)
         display.fill(BLACK)
         clock.tick(27)
+        a = Model(Direction.UP, Texture.PACMAN, Position(0,0), Position(0.5, 0.5))
         r.render(a, display, animate//9)
         pygame.display.flip()
         animate += 1
