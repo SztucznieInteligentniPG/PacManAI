@@ -29,14 +29,14 @@ class World:
     def addActor(self, actor: Actor):
         self.actors.append(actor)
 
-    def putEntity(self, entity: Entity, pos: WorldPosition):
-        self.grid[pos.x][pos.y] = entity
+    def putEntity(self, entity: Entity, position: WorldPosition):
+        self.grid[position.x][position.y] = entity
 
-    def getEntity(self, pos: WorldPosition):
-        return self.grid[pos.x][pos.y]
+    def getEntity(self, position: WorldPosition):
+        return self.grid[position.x][position.y]
 
-    def removeEntity(self, pos: WorldPosition):
-        del self.grid[pos.x][pos.y]
+    def removeEntity(self, position: WorldPosition):
+        del self.grid[position.x][position.y]
 
 
 
