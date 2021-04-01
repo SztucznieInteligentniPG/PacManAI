@@ -1,4 +1,3 @@
-import pygame
 import enum as Enum
 
 

@@ -7,12 +7,12 @@ from position import Position
 class Model:
     direction: Direction
     texture: Texture
-    pos: Position
-    off: float
+    position: Position
+    offset: float
 
-    def __init__(self, direction, tex, pos, off):
+    def __init__(self, direction, texture, position, offset):
         self.direction = direction
-        self.texture = tex
-        self.pos = pos
-        self.off = off
+        self.texture = texture
+        self.pos = position
+        self.off = offset
 
