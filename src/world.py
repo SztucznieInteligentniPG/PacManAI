@@ -8,6 +8,7 @@ from position import Position
 Row = list[Entity]
 Grid = list[Row]
 
+
 class World:
     size: (int, int)
     grid: Grid
