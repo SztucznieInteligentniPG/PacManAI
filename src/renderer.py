@@ -1,21 +1,16 @@
 import pygame
 
-from model import Model
 from direction import Direction
+from model import Model
+from world import World
 
 
 class Renderer:
-    texture_dic = {
-        "PACMAN": [pygame.image.load('img/pacman1.png'),
-                   pygame.image.load('img/pacman2.png'),
-                   pygame.image.load('img/pacman3.png'),
-                   ]
-    }
 
     def __init__(self):
         pass
 
-    def render(self, model: Model, display: pygame.display, frame):
+    def renderModel(self, model: Model, display: pygame.display, frame:int):
         x = model.position.x
         y = model.position.y
         ox = model.offset.x
@@ -24,7 +19,7 @@ class Renderer:
         startY = 76
         offset = 16
 
-        texture = self.texture_dic[model.texture.name][frame]
+        texture =model.texture.value[frame]
         direction = model.direction
         if direction is Direction.UP:
             texture = pygame.transform.rotate(texture, 90)
@@ -34,3 +29,9 @@ class Renderer:
             texture = pygame.transform.flip(texture, False, True)
         position = (startX + x*32 - ox*offset, startY + y*32 - oy*offset)
         display.blit(texture, position)
+
+    def render(self, world: World, display: pygame.display, frame: int):
+        for row in world.grid:
+            for en in row:
+                model = en.model()
+                self.renderModel(model, display, frame)
