@@ -1,25 +1,23 @@
 from abc import ABC, abstractmethod
+from model import Model
 from world import World
-from position import Position
+from world_position import WorldPosition
+
 
 class Entity(ABC):
-    position: Position
-    state: int  # stan danego elementu
+    worldPosition: WorldPosition
 
-    def __init__(self, position, state):
-        self.position = position
-        self.state = state
+    def __init__(self, worldPosition: WorldPosition):
+        self.worldPosition = worldPosition
 
     @abstractmethod
     def serialize(self) -> int:
         pass
 
-    @abstractmethod
     def destroy(self, world: World):  # usunięcie siebie ze świata
-        pass
+        world.removeEntity(self.worldPosition)
 
     @abstractmethod
-    def model(self):  # zwraca informację jak narysować
+    def model(self) -> Model:  # zwraca informację jak narysować
         #  TODO dodać zwracany typ, nwm co potrzebuje renderer
         pass
-

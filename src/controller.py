@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
+from direction import Direction
 from world import World
 
 
 class Controller(ABC):
-    def __init__(self):
-        pass
+    direction: Direction = None
 
     @abstractmethod
     def update(self, world: World):
