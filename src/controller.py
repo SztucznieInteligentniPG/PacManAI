@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from world import World
 
 
 class Controller(ABC):
@@ -7,5 +6,6 @@ class Controller(ABC):
         pass
 
     @abstractmethod
-    def update(self, world: World):
+    def update(self, world):
+        from world import World
         pass

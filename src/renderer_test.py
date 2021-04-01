@@ -28,8 +28,7 @@ def main():
             sys.exit(0)
         display.fill(BLACK)
         clock.tick(27)
-        a = Model(Direction.UP, Texture.PACMAN, Position(0,0), Position(0.5, 0.5))
-        r.render(a, display, animate//9)
+        a = Model(Direction.UP, Texture.PACMAN_0, Position(0,0), Position(0.5, 0.5))
         pygame.display.flip()
         animate += 1
         if animate >= 27:

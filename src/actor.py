@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-import time as time
-from world import World
 from entity import Entity
 from controller import Controller
 
@@ -13,5 +11,6 @@ class Actor(Entity, ABC):
         self.controller = controller
 
     @abstractmethod
-    def update(self, world: World, deltaTime: float):
+    def update(self, world, deltaTime: float):
+        from world import World
         pass
