@@ -1,6 +1,5 @@
-import enum as Enum
+from enum import Enum
 
 
 class Texture(Enum):
     PACMAN = 0
-    GHOST = 1

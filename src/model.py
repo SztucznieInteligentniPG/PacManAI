@@ -1,17 +1,17 @@
-import direction as Direction
-import texture as Texture
+import direction
+import texture
 from position import Position
 
 
 class Model:
-    direction: Direction
-    texture: Texture
+    direction: direction.Direction
+    texture: texture.Texture
     position: Position
     offset: Position
 
     def __init__(self, direction, texture, position, offset):
         self.direction = direction
         self.texture = texture
-        self.pos = position
-        self.off = offset
+        self.position = position
+        self.offset = offset
 
