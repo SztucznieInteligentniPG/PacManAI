@@ -46,7 +46,8 @@ class Player(Actor):
         entity: Entity = world.getEntity(destination)
 
         if destination == self.worldPosition or isinstance(entity, Wall):
-            self.direction = self.controller.direction
+            if self.controller.direction is not None:
+                self.direction = self.controller.direction
             destination = world.getPositionInDirection(self.worldPosition, self.direction)
             entity = world.getEntity(destination)
 
@@ -56,7 +57,8 @@ class Player(Actor):
             if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
-                self.direction = self.controller.direction
+                if self.controller.direction is not None:
+                    self.direction = self.controller.direction
             else:
                 self.moveInDirection(self.direction, distance)
                 distance = 0
