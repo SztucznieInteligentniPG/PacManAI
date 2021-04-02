@@ -1,6 +1,10 @@
-import enum as Enum
+import pygame
+
+from enum import Enum
 
 
 class Texture(Enum):
-    PACMAN = 0
-    GHOST = 1
+    PACMAN_0 = pygame.image.load('img/pacman1.png')
+    PACMAN_1 = pygame.image.load('img/pacman2.png')
+    PACMAN_2 = pygame.image.load('img/pacman3.png')
+

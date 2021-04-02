@@ -1,8 +1,12 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
 from model import Model
-from world import World
 from world_position import WorldPosition
 
+if TYPE_CHECKING:
+    from world import World
 
 class Entity(ABC):
     worldPosition: WorldPosition

@@ -1,8 +1,13 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from world import World
+from typing import TYPE_CHECKING
+
 from entity import Entity
 from controller import Controller
 from position import Position
+
+if TYPE_CHECKING:
+    from world import World
 
 
 class Actor(Entity, ABC):
