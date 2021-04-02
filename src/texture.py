@@ -1,6 +1,6 @@
-from enum import Enum
-
 import pygame
+
+from enum import Enum
 
 
 class Texture(Enum):
