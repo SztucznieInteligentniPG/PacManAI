@@ -21,7 +21,9 @@ class World:
     def __init__(self, size: WorldPosition):
         self.size = size
         self.grid = [[None for i in range(size.y)] for j in range(size.x)]
-        pass
+        self.actors = []
+        self.time = 0.0
+        self.score = 0
 
     def update(self, deltaTime: float):
         for actor in self.actors:
@@ -40,7 +42,7 @@ class World:
         return self.grid[position.x][position.y]
 
     def removeEntity(self, entity: Entity):
-        del self.grid[entity.worldPosition.x][entity.worldPosition.y]
+        self.grid[entity.worldPosition.x][entity.worldPosition.y] = None
         entity.worldPosition = None
 
     def moveEntity(self, entity: Entity, position: WorldPosition):
