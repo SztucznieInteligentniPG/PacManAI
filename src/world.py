@@ -12,15 +12,15 @@ if TYPE_CHECKING:
 
 
 class World:
-    size: (int, int)
+    size: WorldPosition
     grid: Grid
     actors: list[Actor]
     time: float
     score: int
 
-    def __init__(self, size):
-        (x, y) = size
-        self.grid = [[None]*x]*y
+    def __init__(self, size: WorldPosition):
+        self.size = size
+        self.grid = [[None for i in range(size.y)] for j in range(size.x)]
         pass
 
     def update(self, deltaTime: float):
@@ -33,12 +33,19 @@ class World:
 
     def putEntity(self, entity: Entity, position: WorldPosition):
         self.grid[position.x][position.y] = entity
+        entity.setPosition(position)
+        entity.worldPosition = position
 
-    def getEntity(self, position: WorldPosition):
+    def getEntity(self, position: WorldPosition) -> Entity:
         return self.grid[position.x][position.y]
 
-    def removeEntity(self, position: WorldPosition):
-        del self.grid[position.x][position.y]
+    def removeEntity(self, entity: Entity):
+        del self.grid[entity.worldPosition.x][entity.worldPosition.y]
+        entity.worldPosition = None
+
+    def moveEntity(self, entity: Entity, position: WorldPosition):
+        self.removeEntity(entity)
+        self.putEntity(entity, position)
 
     def getPositionInDirection(self, position: WorldPosition, direction: Direction) -> WorldPosition:
         destinationX: int = position.x
@@ -56,12 +63,12 @@ class World:
 
         if destinationX < 0:
             destinationX = 0
-        elif destinationX >= self.size[0]:
-            destinationX = self.size[0] - 1
+        elif destinationX >= self.size.x:
+            destinationX = self.size.x - 1
 
         if destinationY < 0:
             destinationY = 0
-        elif destinationY >= self.size[1]:
-            destinationY = self.size[1] - 1
+        elif destinationY >= self.size.y:
+            destinationY = self.size.y - 1
 
         return WorldPosition(destinationX, destinationY)

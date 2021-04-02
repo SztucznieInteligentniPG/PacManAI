@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from entity import Entity
 from controller import Controller
 from position import Position
+from world_position import WorldPosition
 
 if TYPE_CHECKING:
     from world import World
@@ -12,12 +13,15 @@ if TYPE_CHECKING:
 
 class Actor(Entity, ABC):
     controller: Controller
-    position: Position
+    position: Position = None
 
-    def __init__(self, worldPosition, position: Position, controller: Controller):
-        super().__init__(worldPosition)
+    def __init__(self, controller: Controller):
+        super().__init__()
         self.controller = controller
-        self.position = position
+
+    def setPosition(self, worldPosition: WorldPosition):
+        self.worldPosition = worldPosition
+        self.position = Position(worldPosition.x, worldPosition.y)
 
     @abstractmethod
     def update(self, world: World, deltaTime: float):

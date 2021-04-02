@@ -14,8 +14,8 @@ class Player(Actor):
     direction: Direction
     speed: float = 1.0
 
-    def __init__(self, worldPosition, position, controller, direction: Direction):
-        super().__init__(worldPosition, position, controller)
+    def __init__(self, controller, direction: Direction):
+        super().__init__(controller)
         self.direction = direction
 
     def serialize(self) -> int:
@@ -45,27 +45,27 @@ class Player(Actor):
         destination: WorldPosition = world.getPositionInDirection(self.worldPosition, self.direction)
         entity: Entity = world.getEntity(destination)
 
+        if destination == self.worldPosition or isinstance(entity, Wall):
+            self.direction = self.controller.direction
+            destination = world.getPositionInDirection(self.worldPosition, self.direction)
+            entity = world.getEntity(destination)
+
         if destination != self.worldPosition and not isinstance(entity, Wall):
             distanceToDestination: float = self.getDistanceTo(destination)
 
-            if distance > distanceToDestination:
+            if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
-                self.worldPosition = destination
-                self.position = Position(destination.x, destination.y)
                 self.direction = self.controller.direction
             else:
                 self.moveInDirection(self.direction, distance)
                 distance = 0
-        else:
-            self.direction = self.controller.direction
 
-        if distance > 0:
-            destination = world.getPositionInDirection(self.worldPosition, self.direction)
-            entity = world.getEntity(destination)
+        destination = world.getPositionInDirection(self.worldPosition, self.direction)
+        entity = world.getEntity(destination)
 
-            if destination != self.worldPosition and not isinstance(entity, Wall):
-                self.moveInDirection(self.direction, distance)
+        if destination != self.worldPosition and not isinstance(entity, Wall):
+            self.moveInDirection(self.direction, distance)
 
     def getDistanceTo(self, worldPosition: WorldPosition) -> float:
         return abs(self.position.x - worldPosition.x) + abs(self.position.y - worldPosition.y)
@@ -81,4 +81,4 @@ class Player(Actor):
             self.position.x -= distance
 
     def model(self) -> Model:
-        return Model(self.direction, Texture.PACMAN, self.position, Position(0.5, 0.5))
+        return Model(self.direction, Texture.PACMAN_0, self.position, Position(0.5, 0.5))
