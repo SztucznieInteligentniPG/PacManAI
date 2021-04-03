@@ -2,8 +2,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from entity import Entity
 from controller import Controller
+from entity import Entity
+from position import Position
+from world_position import WorldPosition
 
 if TYPE_CHECKING:
     from world import World
@@ -11,10 +13,18 @@ if TYPE_CHECKING:
 
 class Actor(Entity, ABC):
     controller: Controller
+    position: Position = None
 
-    def __init__(self, controller: Controller, position, state):
-        super().__init__(position, state)
+    def __init__(self, controller: Controller):
+        super().__init__()
         self.controller = controller
+
+    def destroy(self, world: World):
+        world.removeActor(self)
+
+    def setPosition(self, worldPosition: WorldPosition):
+        self.worldPosition = worldPosition
+        self.position = Position(worldPosition.x, worldPosition.y)
 
     @abstractmethod
     def update(self, world: World, deltaTime: float):

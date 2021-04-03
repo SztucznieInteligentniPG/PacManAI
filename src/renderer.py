@@ -36,5 +36,6 @@ class Renderer:
     def render(self, world: World):
         for row in world.grid:
             for entity in row:
-                model = entity.model()
-                self.renderModel(model, self.display)
+                if isinstance(entity, Entity):
+                    model = entity.model()
+                    self.renderModel(model)
