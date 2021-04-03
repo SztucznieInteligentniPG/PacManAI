@@ -1,8 +1,11 @@
 import pygame
 
 from direction import Direction
+from entity import Entity
 from model import Model
 from world import World
+
+BACKGROUND = (0, 0, 0)
 
 
 class Renderer:
@@ -34,8 +37,10 @@ class Renderer:
         self.display.blit(texture, position)
 
     def render(self, world: World):
+        self.display.fill(BACKGROUND)
         for row in world.grid:
             for entity in row:
                 if isinstance(entity, Entity):
                     model = entity.model()
                     self.renderModel(model)
+        pygame.display.update()

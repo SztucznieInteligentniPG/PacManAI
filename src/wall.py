@@ -2,8 +2,8 @@ from direction import Direction
 from entity import Entity
 from entity_dictionary import EntityDictionary
 from model import Model
-from position import Position
 from texture import Texture
+from vector2 import Vector2Float
 
 
 class Wall(Entity):
@@ -14,6 +14,6 @@ class Wall(Entity):
         return Model(
             Direction.DEFAULT,
             Texture.WALL,
-            Position(self.worldPosition.x, self.worldPosition.y),
-            Position(0.5, 0.5),
+            Vector2Float(self.worldPosition.x, self.worldPosition.y),
+            Vector2Float(0.5, 0.5),
         )

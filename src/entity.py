@@ -3,14 +3,14 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from model import Model
-from world_position import WorldPosition
+from vector2 import Vector2Int
 
 if TYPE_CHECKING:
     from world import World
 
 
 class Entity(ABC):
-    worldPosition: WorldPosition = None
+    worldPosition: Vector2Int = None
 
     def destroy(self, world: World):
         """
@@ -21,7 +21,7 @@ class Entity(ABC):
         """
         world.removeEntity(self)
 
-    def setPosition(self, worldPosition: WorldPosition):
+    def setPosition(self, worldPosition: Vector2Int):
         self.worldPosition = worldPosition
 
     @abstractmethod

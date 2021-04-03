@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING
 
 from controller import Controller
 from entity import Entity
-from position import Position
-from world_position import WorldPosition
+from vector2 import Vector2Int, Vector2Float
 
 if TYPE_CHECKING:
     from world import World
@@ -13,7 +12,7 @@ if TYPE_CHECKING:
 
 class Actor(Entity, ABC):
     controller: Controller
-    position: Position = None
+    position: Vector2Float = None
 
     def __init__(self, controller: Controller):
         super().__init__()
@@ -22,9 +21,9 @@ class Actor(Entity, ABC):
     def destroy(self, world: World):
         world.removeActor(self)
 
-    def setPosition(self, worldPosition: WorldPosition):
+    def setPosition(self, worldPosition: Vector2Int):
         self.worldPosition = worldPosition
-        self.position = Position(worldPosition.x, worldPosition.y)
+        self.position = Vector2Float(worldPosition.x, worldPosition.y)
 
     @abstractmethod
     def update(self, world: World, deltaTime: float):

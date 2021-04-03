@@ -3,16 +3,15 @@ from direction import Direction
 from entity import Entity
 from entity_dictionary import EntityDictionary
 from model import Model
-from position import Position
 from texture import Texture
+from vector2 import Vector2Int, Vector2Float
 from wall import Wall
 from world import World
-from world_position import WorldPosition
 
 
 class Player(Actor):
     direction: Direction
-    speed: float = 1.0
+    speed = 1.0
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
@@ -40,10 +39,10 @@ class Player(Actor):
         elif self.direction is Direction.DOWN and self.controller.direction is Direction.UP:
             self.direction = Direction.UP
 
-        distance: float = self.speed * deltaTime
+        distance = self.speed * deltaTime
 
-        destination: WorldPosition = world.getPositionInDirection(self.worldPosition, self.direction)
-        entity: Entity = world.getEntity(destination)
+        destination = world.getPositionInDirection(self.worldPosition, self.direction)
+        entity = world.getEntity(destination)
 
         if destination == self.worldPosition or isinstance(entity, Wall):
             if self.controller.direction is not None:
@@ -69,7 +68,7 @@ class Player(Actor):
         if destination != self.worldPosition and not isinstance(entity, Wall):
             self.moveInDirection(self.direction, distance)
 
-    def getDistanceTo(self, worldPosition: WorldPosition) -> float:
+    def getDistanceTo(self, worldPosition: Vector2Int) -> float:
         return abs(self.position.x - worldPosition.x) + abs(self.position.y - worldPosition.y)
 
     def moveInDirection(self, direction: Direction, distance: float):
@@ -83,4 +82,4 @@ class Player(Actor):
             self.position.x -= distance
 
     def model(self) -> Model:
-        return Model(self.direction, Texture.PACMAN_0, self.position, Position(0.5, 0.5))
+        return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))

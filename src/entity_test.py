@@ -1,17 +1,17 @@
 from direction import Direction
 from mock_controller import MockController
 from player import Player
+from vector2 import Vector2Int
 from wall import Wall
 from world import World
-from world_position import WorldPosition
 
 
-world = World(WorldPosition(4, 4))
+world = World(Vector2Int(4, 4))
 
 player = Player(MockController(Direction.LEFT), Direction.LEFT)
 wall = Wall()
-world.putEntity(wall, WorldPosition(1, 1))
-world.putActor(player, WorldPosition(3, 1))
+world.putEntity(wall, Vector2Int(1, 1))
+world.putActor(player, Vector2Int(3, 1))
 
 print(world.actors)
 print(world.grid)
