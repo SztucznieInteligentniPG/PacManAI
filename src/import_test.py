@@ -10,6 +10,7 @@ from texture import Texture
 from world import World
 from world_position import WorldPosition
 
+
 actor: Actor = None
 controller: Controller = None
 direction: Direction = Direction.UP
