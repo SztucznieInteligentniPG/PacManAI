@@ -2,6 +2,12 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Position:
+class Vector2Int:
+    x: int
+    y: int
+
+
+@dataclass
+class Vector2Float:
     x: float
     y: float

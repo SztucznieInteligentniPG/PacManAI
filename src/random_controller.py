@@ -7,8 +7,8 @@ from world import World
 
 class RandomController(Controller):
     direction: Direction = None
-    timerMax: int = 60
-    timer: int = 0
+    timerMax = 60
+    timer = 0
 
     def update(self, world: World):
         self.timer += 1

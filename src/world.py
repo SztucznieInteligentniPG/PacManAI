@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from direction import Direction
-from world_position import WorldPosition
+from vector2 import Vector2Int
 
 if TYPE_CHECKING:
     from actor import Actor
@@ -12,13 +12,13 @@ if TYPE_CHECKING:
 
 
 class World:
-    size: WorldPosition
+    size: Vector2Int
     grid: Grid
     actors: list[Actor]
     time: float
     score: int
 
-    def __init__(self, size: WorldPosition):
+    def __init__(self, size: Vector2Int):
         self.size = size
         self.grid = [[None for i in range(size.y)] for j in range(size.x)]
         self.actors = []
@@ -30,7 +30,7 @@ class World:
             actor.update(self, deltaTime)
         self.time += deltaTime
 
-    def putActor(self, actor: Actor, position: WorldPosition):
+    def putActor(self, actor: Actor, position: Vector2Int):
         self.actors.append(actor)
         self.putEntity(actor, position)
 
@@ -39,12 +39,12 @@ class World:
             self.actors.remove(actor)
         self.removeEntity(actor)
 
-    def putEntity(self, entity: Entity, position: WorldPosition):
+    def putEntity(self, entity: Entity, position: Vector2Int):
         self.grid[position.x][position.y] = entity
         entity.setPosition(position)
         entity.worldPosition = position
 
-    def getEntity(self, position: WorldPosition) -> Entity:
+    def getEntity(self, position: Vector2Int) -> Entity:
         return self.grid[position.x][position.y]
 
     def removeEntity(self, entity: Entity):
@@ -52,11 +52,11 @@ class World:
             self.grid[entity.worldPosition.x][entity.worldPosition.y] = None
             entity.worldPosition = None
 
-    def moveEntity(self, entity: Entity, position: WorldPosition):
+    def moveEntity(self, entity: Entity, position: Vector2Int):
         self.removeEntity(entity)
         self.putEntity(entity, position)
 
-    def getPositionInDirection(self, position: WorldPosition, direction: Direction) -> WorldPosition:
+    def getPositionInDirection(self, position: Vector2Int, direction: Direction) -> Vector2Int:
         destinationX: int = position.x
         destinationY: int = position.y
         
@@ -80,4 +80,4 @@ class World:
         elif destinationY >= self.size.y:
             destinationY = self.size.y - 1
 
-        return WorldPosition(destinationX, destinationY)
+        return Vector2Int(destinationX, destinationY)

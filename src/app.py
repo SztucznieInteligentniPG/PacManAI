@@ -5,9 +5,9 @@ from direction import Direction
 from player import Player
 from random_controller import RandomController
 from renderer import Renderer
+from vector2 import Vector2Int
 from wall import Wall
 from world import World
-from world_position import WorldPosition
 
 HEIGHT = 800
 WIDTH = 800
@@ -20,18 +20,18 @@ def main():
     clock = pygame.time.Clock()
 
     renderer = Renderer(display)
-    world = World(WorldPosition(20, 20))
+    world = World(Vector2Int(20, 20))
 
     player = Player(RandomController(), Direction.UP)
 
-    world.putEntity(Wall(), WorldPosition(5, 7))
-    world.putEntity(Wall(), WorldPosition(5, 8))
-    world.putEntity(Wall(), WorldPosition(5, 9))
-    world.putEntity(Wall(), WorldPosition(6, 9))
-    world.putEntity(Wall(), WorldPosition(7, 9))
-    world.putEntity(Wall(), WorldPosition(5, 10))
-    world.putEntity(Wall(), WorldPosition(5, 11))
-    world.putActor(player, WorldPosition(10, 10))
+    world.putEntity(Wall(), Vector2Int(5, 7))
+    world.putEntity(Wall(), Vector2Int(5, 8))
+    world.putEntity(Wall(), Vector2Int(5, 9))
+    world.putEntity(Wall(), Vector2Int(6, 9))
+    world.putEntity(Wall(), Vector2Int(7, 9))
+    world.putEntity(Wall(), Vector2Int(5, 10))
+    world.putEntity(Wall(), Vector2Int(5, 11))
+    world.putActor(player, Vector2Int(10, 10))
 
     while True:
         event = pygame.event.poll()
@@ -39,7 +39,7 @@ def main():
             pygame.quit()
             sys.exit(0)
 
-        deltaTime: float = clock.tick(60) / 1000.0
+        deltaTime = clock.tick(60) / 1000.0
 
         world.update(deltaTime)
 
