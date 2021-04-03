@@ -20,7 +20,7 @@ texture: Texture = Texture.PACMAN_0
 position: Position = Position(0.5, 0.5)
 model: Model = Model(direction, texture, position, position)
 renderer: Renderer = Renderer(None)
-world: World = World((20, 20))
+world: World = World(WorldPosition(20, 20))
 worldPosition: WorldPosition = WorldPosition(1, 1)
 
 print(world.grid)
