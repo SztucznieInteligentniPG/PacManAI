@@ -19,7 +19,7 @@ class Entity(ABC):
         :param world: świat z którego usuwany jest entity
         :return:
         """
-        world.removeEntity(self.worldPosition)
+        world.removeEntity(self)
 
     def setPosition(self, worldPosition: WorldPosition):
         self.worldPosition = worldPosition

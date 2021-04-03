@@ -9,36 +9,46 @@ from world_position import WorldPosition
 world = World(WorldPosition(4, 4))
 
 player = Player(MockController(Direction.LEFT), Direction.LEFT)
-world.putEntity(Wall(), WorldPosition(1, 1))
+wall = Wall()
+world.putEntity(wall, WorldPosition(1, 1))
+world.putActor(player, WorldPosition(3, 1))
 
-world.putEntity(player, WorldPosition(3, 1))
+print(world.actors)
+print(world.grid)
 
-# test ściany
+print('test ściany')
+
 print(player.position, player.worldPosition)
-player.update(world, 0.5)
+world.update(0.5)
 print(player.position, player.worldPosition)
-player.update(world, 0.5)
+world.update(0.5)
 print(player.position, player.worldPosition)
-player.update(world, 0.5)
+world.update(0.5)
 print(player.position, player.worldPosition)
 
-print()
+print('test końca poziomu')
+print('krawędź górna')
 
-# test końca poziomu
 player.controller = MockController(Direction.UP)
-player.update(world, 0.5)
+world.update(0.7)
 print(player.position, player.worldPosition)
-player.update(world, 0.5)
+world.update(0.7)
 print(player.position, player.worldPosition)
-player.update(world, 0.5)
+world.update(0.7)
 print(player.position, player.worldPosition)
 
-print()
+print('krawędź lewa')
 
 player.controller = MockController(Direction.LEFT)
-player.update(world, 1)
+world.update(1)
 print(player.position, player.worldPosition)
-player.update(world, 1)
+world.update(1)
 print(player.position, player.worldPosition)
-player.update(world, 1)
+world.update(1)
 print(player.position, player.worldPosition)
+
+wall.destroy(world)
+player.destroy(world)
+
+print(world.actors)
+print(world.grid)

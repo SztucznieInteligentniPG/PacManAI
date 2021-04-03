@@ -30,8 +30,14 @@ class World:
             actor.update(self, deltaTime)
         self.time += deltaTime
 
-    def addActor(self, actor: Actor):
+    def putActor(self, actor: Actor, position: WorldPosition):
         self.actors.append(actor)
+        self.putEntity(actor, position)
+
+    def removeActor(self, actor: Actor):
+        if self.actors.__contains__(actor):
+            self.actors.remove(actor)
+        self.removeEntity(actor)
 
     def putEntity(self, entity: Entity, position: WorldPosition):
         self.grid[position.x][position.y] = entity
@@ -42,8 +48,9 @@ class World:
         return self.grid[position.x][position.y]
 
     def removeEntity(self, entity: Entity):
-        self.grid[entity.worldPosition.x][entity.worldPosition.y] = None
-        entity.worldPosition = None
+        if entity.worldPosition is not None:
+            self.grid[entity.worldPosition.x][entity.worldPosition.y] = None
+            entity.worldPosition = None
 
     def moveEntity(self, entity: Entity, position: WorldPosition):
         self.removeEntity(entity)

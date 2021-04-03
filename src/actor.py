@@ -2,8 +2,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from entity import Entity
 from controller import Controller
+from entity import Entity
 from position import Position
 from world_position import WorldPosition
 
@@ -18,6 +18,9 @@ class Actor(Entity, ABC):
     def __init__(self, controller: Controller):
         super().__init__()
         self.controller = controller
+
+    def destroy(self, world: World):
+        world.removeActor(self)
 
     def setPosition(self, worldPosition: WorldPosition):
         self.worldPosition = worldPosition
