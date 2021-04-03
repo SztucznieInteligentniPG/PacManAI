@@ -5,7 +5,7 @@ from direction import Direction
 from model import Model
 from renderer import Renderer
 from texture import Texture
-from vector2 import Vector2Int
+from vector2 import Vector2Float
 
 clock = pygame.time.Clock()
 HEIGHT = 800
@@ -28,9 +28,9 @@ def main():
         display.fill(BACKGROUND)
         clock.tick(27)
 
-        a1 = Model(Direction.LEFT, Texture.PACMAN_0, Vector2Int(0, 0), Vector2Int(0.5, 0.5))
-        a2 = Model(Direction.LEFT, Texture.PACMAN_1, Vector2Int(4, 0), Vector2Int(0.5, 0.5))
-        a3 = Model(Direction.LEFT, Texture.PACMAN_2, Vector2Int(8, 0), Vector2Int(0.5, 0.5))
+        a1 = Model(Direction.LEFT, Texture.PACMAN_0, Vector2Float(0, 0), Vector2Float(0.5, 0.5))
+        a2 = Model(Direction.LEFT, Texture.PACMAN_1, Vector2Float(4, 0), Vector2Float(0.5, 0.5))
+        a3 = Model(Direction.LEFT, Texture.PACMAN_2, Vector2Float(8, 0), Vector2Float(0.5, 0.5))
 
         renderer.renderModel(a1)
         renderer.renderModel(a2)

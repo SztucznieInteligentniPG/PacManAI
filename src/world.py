@@ -20,7 +20,7 @@ class World:
 
     def __init__(self, size: Vector2Int):
         self.size = size
-        self.grid = [[None for i in range(size.y)] for j in range(size.x)]
+        self.grid = [[None for _ in range(size.y)] for _ in range(size.x)]
         self.actors = []
         self.time = 0.0
         self.score = 0
