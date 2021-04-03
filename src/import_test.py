@@ -19,7 +19,7 @@ texture = Texture.PACMAN_0
 position = Vector2Float(0.5, 0.5)
 model = Model(direction, texture, position, position)
 renderer = Renderer(None)
-worldPosition = Vector2Int(1, 1)
+worldPosition = Vector2Int(4, 4)
 world = World(worldPosition)
 
 print(world.grid)
