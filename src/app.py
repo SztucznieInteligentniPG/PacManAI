@@ -3,11 +3,11 @@ import sys
 
 from direction import Direction
 from player import Player
+from random_controller import RandomController
 from renderer import Renderer
 from wall import Wall
 from world import World
 from world_position import WorldPosition
-from random_controller import RandomController
 
 HEIGHT = 800
 WIDTH = 800
