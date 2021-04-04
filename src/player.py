@@ -63,12 +63,12 @@ class Player(Actor):
                 self.moveInDirection(self.direction, distance)
                 distance = 0
 
-        isWall = False
+        isWall = True
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         list = world.getEntity(destination)
         for entity in list:
             if destination != self.worldPosition and not isinstance(entity, Wall):
-                isWall = True
+                isWall = False
 
         if not isWall:
             self.moveInDirection(self.direction, distance)
