@@ -48,8 +48,7 @@ class Player(Actor):
             if destination == self.worldPosition or isinstance(entity, Wall):
                 if self.controller.direction is not None:
                     self.direction = self.controller.direction
-                destination = world.getPositionInDirection(self.worldPosition, self.direction)
-                entity = world.getEntity(destination)
+                    destination = world.getPositionInDirection(self.worldPosition, self.direction)
                 isWall = True
 
         if destination != self.worldPosition and not isWall:
