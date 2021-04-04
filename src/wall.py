@@ -8,7 +8,7 @@ from vector2 import Vector2Float
 
 class Wall(Entity):
     def serialize(self) -> int:
-        return EntityDictionary.WALL
+        return EntityDictionary.WALL.value
 
     def model(self) -> Model:
         return Model(

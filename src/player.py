@@ -1,6 +1,5 @@
 from actor import Actor
 from direction import Direction
-from entity import Entity
 from entity_dictionary import EntityDictionary
 from model import Model
 from texture import Texture
