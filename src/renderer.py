@@ -39,8 +39,9 @@ class Renderer:
     def render(self, world: World):
         self.display.fill(BACKGROUND)
         for row in world.grid:
-            for entity in row:
-                if isinstance(entity, Entity):
-                    model = entity.model()
-                    self.renderModel(model)
+            for list in row:
+                for entity in list:
+                    if isinstance(entity, Entity):
+                        model = entity.model()
+                        self.renderModel(model)
         pygame.display.update()
