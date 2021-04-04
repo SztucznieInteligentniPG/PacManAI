@@ -21,7 +21,7 @@ class World:
 
     def __init__(self, size: Vector2Int):
         self.size = size
-        self.grid = [[[] for i in range(size.y)] for j in range(size.x)]
+        self.grid = [[[None] for i in range(size.y)] for j in range(size.x)]
         self.actors = []
         self.time = 0.0
         self.score = 0
@@ -41,6 +41,8 @@ class World:
         self.removeEntity(actor)
 
     def putEntity(self, entity: Entity, position: Vector2Int):
+        if self.grid[position.x][position.y][0] == None:
+            self.grid[position.x][position.y].remove(None)
         self.grid[position.x][position.y].append(entity)
         entity.setPosition(position)
         entity.worldPosition = position
@@ -51,7 +53,9 @@ class World:
     def removeEntity(self, entity: Entity):
         if entity.worldPosition is not None:
             self.grid[entity.worldPosition.x][entity.worldPosition.y].remove(entity)
-            entity.worldPosition = None
+        if not self.grid[entity.worldPosition.x][entity.worldPosition.y]:
+            self.grid[entity.worldPosition.x][entity.worldPosition.y].append(None)
+        entity.worldPosition = None
 
     def moveEntity(self, entity: Entity, position: Vector2Int):
         self.removeEntity(entity)

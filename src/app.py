@@ -30,6 +30,7 @@ def main():
     world.putEntity(Wall(), Vector2Int(6, 9))
     world.putEntity(Wall(), Vector2Int(7, 9))
     world.putEntity(Wall(), Vector2Int(5, 10))
+    world.putEntity(Wall(), Vector2Int(4, 10))
     world.putEntity(Wall(), Vector2Int(5, 11))
     world.putActor(player, Vector2Int(10, 10))
 
