@@ -10,7 +10,7 @@ from world import World
 
 class Player(Actor):
     direction: Direction
-    speed = 3.0
+    speed = 1.0
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
@@ -41,19 +41,15 @@ class Player(Actor):
         distance = self.speed * deltaTime
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
-        list = world.getEntity(destination)
-        isWall = False
-        for entity in list:
-            if destination == self.worldPosition or isinstance(entity, Wall):
-                if self.controller.direction is not None:
-                    self.direction = self.controller.direction
-                    destination = world.getPositionInDirection(self.worldPosition, self.direction)
-                isWall = True
+        if destination == self.worldPosition or world.hasEntityOfType(destination, Wall):
+            if self.controller.direction is not None:
+                self.direction = self.controller.direction
+                destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-        if destination != self.worldPosition and not isWall:
+        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
             distanceToDestination: float = self.getDistanceTo(destination)
             if distance >= distanceToDestination:
-                distance = distanceToDestination
+                distance -= distanceToDestination
                 world.moveEntity(self, destination)
                 if self.controller.direction is not None:
                     self.direction = self.controller.direction
@@ -61,14 +57,9 @@ class Player(Actor):
                 self.moveInDirection(self.direction, distance)
                 distance = 0
 
-        isWall = True
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
-        list = world.getEntity(destination)
-        for entity in list:
-            if destination != self.worldPosition and not isinstance(entity, Wall):
-                isWall = False
 
-        if not isWall:
+        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
             self.moveInDirection(self.direction, distance)
 
     def getDistanceTo(self, worldPosition: Vector2Int) -> float:
