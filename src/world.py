@@ -22,7 +22,7 @@ class World:
     def __init__(self, size: Vector2Int):
         self.size = size
 
-        self.grid = [[[None] for _ in range(size.y)] for _ in range(size.x)]
+        self.grid = [[[] for _ in range(size.y)] for _ in range(size.x)]
         self.actors = []
         self.time = 0.0
         self.score = 0
@@ -42,20 +42,23 @@ class World:
         self.removeEntity(actor)
 
     def putEntity(self, entity: Entity, position: Vector2Int):
-        if self.grid[position.x][position.y][0] == None:
-            self.grid[position.x][position.y].remove(None)
         self.grid[position.x][position.y].append(entity)
         entity.setPosition(position)
         entity.worldPosition = position
 
-    def getEntity(self, position: Vector2Int) -> list[Entity]:
+    def getEntities(self, position: Vector2Int) -> list[Entity]:
         return self.grid[position.x][position.y]
+
+    def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:
+        result = False
+        for entity in self.getEntities(position):
+            if isinstance(entity, entityType):
+                result = True
+        return result
 
     def removeEntity(self, entity: Entity):
         if entity.worldPosition is not None:
             self.grid[entity.worldPosition.x][entity.worldPosition.y].remove(entity)
-        if not self.grid[entity.worldPosition.x][entity.worldPosition.y]:
-            self.grid[entity.worldPosition.x][entity.worldPosition.y].append(None)
         entity.worldPosition = None
 
     def moveEntity(self, entity: Entity, position: Vector2Int):
