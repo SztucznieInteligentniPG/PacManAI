@@ -44,11 +44,13 @@ class Player(Actor):
         distance = self.speed * deltaTime
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
-        if destination == self.worldPosition or world.hasEntityOfType(destination, Wall):
-            if self.controller.direction is not None:
-                destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                if not world.hasEntityOfType(destination, Wall):
-                    self.direction = self.controller.direction
+        if self.controller.direction is not None and (
+            destination == self.worldPosition or
+            world.hasEntityOfType(destination, Wall)
+        ):
+            destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+            if not world.hasEntityOfType(destination, Wall):
+                self.direction = self.controller.direction
 
         if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
             distanceToDestination: float = self.getDistanceTo(destination)
