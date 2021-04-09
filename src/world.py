@@ -9,8 +9,6 @@ if TYPE_CHECKING:
     from actor import Actor
     from deserialize import Deserialize
     from entity import Entity
-    from player_controller import PlayerController
-    from random_controller import RandomController
     Place = list[Entity]
     Row = list[Place]
     Grid = list[Row]
@@ -121,6 +119,5 @@ class World:
 
                 j += 1
             i += 1
-        print("hello")
 
 
