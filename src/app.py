@@ -1,7 +1,9 @@
 import pygame
 import sys
+import time
 
 from direction import Direction
+from game_state import GameState
 from player import Player
 from point import Point
 from player_controller import PlayerController
@@ -46,6 +48,16 @@ def main():
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+            elif world.gameState == GameState.WON:
+                print('you won')
+                time.sleep(1)
+                pygame.quit()
+                sys.exit(0)
+            elif world.gameState == GameState.LOST:
+                print('you lost')
+                time.sleep(1)
                 pygame.quit()
                 sys.exit(0)
             elif event.type == pygame.KEYDOWN:
