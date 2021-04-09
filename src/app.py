@@ -3,6 +3,7 @@ import sys
 import time
 
 from direction import Direction
+from game_state import GameState
 from player import Player
 from point import Point
 from player_controller import PlayerController
@@ -10,7 +11,6 @@ from renderer import Renderer
 from vector2 import Vector2Int
 from wall import Wall
 from world import World
-from gameState import GameState
 
 HEIGHT = 800
 WIDTH = 800

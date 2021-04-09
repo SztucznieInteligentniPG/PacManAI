@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from direction import Direction
+from game_state import GameState
 from vector2 import Vector2Int
-from gameState import GameState
 
 if TYPE_CHECKING:
     from actor import Actor
@@ -37,9 +37,10 @@ class World:
         self.timeToChangeMode = 15.0
         self.pointsRemaining = 0
         self.gameState = GameState.RUNNING
+        self.lives = 3
 
     def update(self, deltaTime: float):
-        if not self.gameState == GameState.LOST or self.gameState == GameState.WON:
+        if self.gameState is not GameState.LOST and self.gameState is not GameState.WON:
             for actor in self.actors:
                 actor.update(self, deltaTime)
             self.time += deltaTime
@@ -82,6 +83,9 @@ class World:
         self.lives -= 1
         if self.lives == 0:
             self.gameState = GameState.LOST
+        else:
+            self.gameState = GameState.RESPAWNING
+            self.timeToChangeMode = 3.0
 
     def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:
         result = False
