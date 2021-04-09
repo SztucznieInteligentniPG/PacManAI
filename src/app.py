@@ -3,7 +3,8 @@ import sys
 
 from direction import Direction
 from player import Player
-from player_controller import PlayerController
+from point import Point
+from random_controller import RandomController
 from renderer import Renderer
 from vector2 import Vector2Int
 from wall import Wall
@@ -33,6 +34,11 @@ def main():
     world.putEntity(Wall(), Vector2Int(5, 10))
     world.putEntity(Wall(), Vector2Int(4, 10))
     world.putEntity(Wall(), Vector2Int(5, 11))
+    world.putEntity(Point(), Vector2Int(6, 7))
+    world.putEntity(Point(), Vector2Int(6, 8))
+    world.putEntity(Point(), Vector2Int(8, 9))
+    world.putEntity(Point(), Vector2Int(6, 10))
+    world.putEntity(Point(), Vector2Int(6, 11))
     world.putActor(player, Vector2Int(10, 10))
 
     keys = []

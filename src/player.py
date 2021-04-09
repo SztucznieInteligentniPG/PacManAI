@@ -2,6 +2,7 @@ from actor import Actor
 from direction import Direction
 from entity_dictionary import EntityDictionary
 from model import Model
+from point import Point
 from texture import Texture
 from vector2 import Vector2Int, Vector2Float
 from wall import Wall
@@ -64,6 +65,12 @@ class Player(Actor):
             else:
                 self.moveInDirection(self.direction, distance)
                 distance = 0
+
+        # placeholder dopóki nie będzie kolizji
+        if world.hasEntityOfType(self.worldPosition, Point):
+            for entity in world.getEntities(self.worldPosition):
+                if isinstance(entity, Point):
+                    entity.collect(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
