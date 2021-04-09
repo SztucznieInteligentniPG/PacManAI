@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 from typing import TYPE_CHECKING
 
 from direction import Direction
@@ -7,6 +8,7 @@ from vector2 import Vector2Int
 
 if TYPE_CHECKING:
     from actor import Actor
+    from deserialize import Deserialize
     from entity import Entity
 
     Place = list[Entity]
@@ -25,19 +27,21 @@ class World:
     pointsRemaining: int
     lives: int
     gameState: GameState
+    deserialize: Deserialize
 
-    def __init__(self, size: Vector2Int):
+    def __init__(self, size: Vector2Int, deserialize: Deserialize):
         self.size = size
 
         self.grid = [[[] for _ in range(size.y)] for _ in range(size.x)]
         self.actors = []
         self.time = 0.0
-        self.score = 0
+        self.score = 0   
         self.timeLimit = 50.0
         self.timeToChangeMode = 15.0
         self.pointsRemaining = 0
         self.gameState = GameState.RUNNING
         self.lives = 3
+        self.deserialize = deserialize
 
     def update(self, deltaTime: float):
         if self.gameState is not GameState.LOST and self.gameState is not GameState.WON:
@@ -134,3 +138,26 @@ class World:
             destinationY = self.size.y - 1
 
         return Vector2Int(destinationX, destinationY)
+
+    def loadGrid(self):
+        from actor import Actor
+        f = open("map.txt", "r")
+        data = json.load(f)
+        grid = data["grid"]
+
+        i = 0
+        j = 0
+        for row in grid:
+            j=0
+            for place in row:
+                for entityCode in place:
+                    entity = self.deserialize.deserialize(entityCode)
+                    if isinstance(entity, Actor):
+                        self.putActor(entity, Vector2Int(j, i))
+                    elif entity is not None:
+                        self.putEntity(entity, Vector2Int(j, i))
+
+                j += 1
+            i += 1
+
+
