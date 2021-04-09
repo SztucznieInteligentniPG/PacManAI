@@ -9,3 +9,4 @@ class EntityDictionary(Enum):
     PLAYER_UP = 4
     PLAYER_LEFT = 5
     PLAYER_DOWN = 6
+

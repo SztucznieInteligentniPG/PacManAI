@@ -1,4 +1,5 @@
 from __future__ import annotations
+import json
 from typing import TYPE_CHECKING
 
 from direction import Direction
@@ -6,7 +7,10 @@ from vector2 import Vector2Int
 
 if TYPE_CHECKING:
     from actor import Actor
+    from deserialize import Deserialize
     from entity import Entity
+    from player_controller import PlayerController
+    from random_controller import RandomController
     Place = list[Entity]
     Row = list[Place]
     Grid = list[Row]
@@ -18,14 +22,16 @@ class World:
     actors: list[Actor]
     time: float
     score: int
+    deserialize: Deserialize
 
-    def __init__(self, size: Vector2Int):
+    def __init__(self, size: Vector2Int, deserialize: Deserialize):
         self.size = size
 
         self.grid = [[[] for _ in range(size.y)] for _ in range(size.x)]
         self.actors = []
         self.time = 0.0
         self.score = 0
+        self.deserialize = deserialize
 
     def update(self, deltaTime: float):
         for actor in self.actors:
@@ -94,3 +100,27 @@ class World:
             destinationY = self.size.y - 1
 
         return Vector2Int(destinationX, destinationY)
+
+    def loadGrid(self):
+        from actor import Actor
+        f = open("map.txt", "r")
+        data = json.load(f)
+        grid = data["grid"]
+
+        i = 0
+        j = 0
+        for row in grid:
+            j=0
+            for place in row:
+                for entityCode in place:
+                    entity = self.deserialize.deserialize(entityCode)
+                    if isinstance(entity, Actor):
+                        self.putActor(entity, Vector2Int(j, i))
+                    elif entity is not None:
+                        self.putEntity(entity, Vector2Int(j, i))
+
+                j += 1
+            i += 1
+        print("hello")
+
+
