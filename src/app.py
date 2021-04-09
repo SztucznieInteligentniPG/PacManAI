@@ -4,7 +4,7 @@ import sys
 from direction import Direction
 from player import Player
 from point import Point
-from random_controller import RandomController
+from player_controller import PlayerController
 from renderer import Renderer
 from vector2 import Vector2Int
 from wall import Wall
