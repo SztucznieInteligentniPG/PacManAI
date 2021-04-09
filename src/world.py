@@ -49,8 +49,8 @@ class World:
     def getEntities(self, position: Vector2Int) -> list[Entity]:
         return self.grid[position.x][position.y]
 
-    def increaseScore(self):
-        self.score += 1
+    def addScore(self, score: int):
+        self.score += score
         print('Wynik:', self.score)
 
     def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:

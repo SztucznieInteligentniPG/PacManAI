@@ -21,4 +21,4 @@ class Point(Entity):
 
     def collect(self, world: World):
         self.destroy(world)
-        world.increaseScore()
+        world.addScore(1)
