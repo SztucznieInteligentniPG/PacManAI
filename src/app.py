@@ -34,7 +34,7 @@ def main():
             RandomController(),
             RandomController()
         )
-    world = World(Vector2Int(20, 20), deserialize)
+    world = World(Vector2Int(19, 19), deserialize)
     player = Player(playerController, Direction.UP)
     world.loadGrid()
 
