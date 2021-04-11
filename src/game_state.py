@@ -3,6 +3,7 @@ from enum import Enum
 class GameState(Enum):
     RUNNING = 0
     RUNNING_CHAOS = 1
-    WON = 2
-    LOST = 3
-    RESPAWNING = 4
+    PSYCHODELIC = 2
+    WON = 3
+    LOST = 4
+    RESPAWNING = 5
