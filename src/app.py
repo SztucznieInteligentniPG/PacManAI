@@ -3,10 +3,12 @@ import sys
 import time
 
 from direction import Direction
+from deserialize import Deserialize
 from game_state import GameState
 from player import Player
 from point import Point
 from player_controller import PlayerController
+from random_controller import RandomController
 from renderer import Renderer
 from vector2 import Vector2Int
 from wall import Wall
@@ -23,11 +25,20 @@ def main():
     clock = pygame.time.Clock()
 
     renderer = Renderer(display)
-    world = World(Vector2Int(20, 20))
 
     playerController = PlayerController()
+    deserialize = Deserialize(
+            playerController,
+            RandomController(),
+            RandomController(),
+            RandomController(),
+            RandomController()
+        )
+    world = World(Vector2Int(20, 20), deserialize)
     player = Player(playerController, Direction.UP)
+    world.loadGrid()
 
+    '''
     world.putEntity(Wall(), Vector2Int(5, 7))
     world.putEntity(Wall(), Vector2Int(5, 8))
     world.putEntity(Wall(), Vector2Int(5, 9))
@@ -42,6 +53,7 @@ def main():
     world.putEntity(Point(), Vector2Int(6, 10))
     world.putEntity(Point(), Vector2Int(6, 11))
     world.putActor(player, Vector2Int(10, 10))
+    '''
 
     keys = []
     while True:

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from model import Model
-from vector2 import Vector2Int
+from vector2 import Vector2Int,Vector2Float
 
 if TYPE_CHECKING:
     from world import World
@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 class Entity(ABC):
     worldPosition: Vector2Int = None
+    collisionBox: Vector2Float
 
     def destroy(self, world: World):
         """
@@ -23,6 +24,9 @@ class Entity(ABC):
 
     def setPosition(self, worldPosition: Vector2Int):
         self.worldPosition = worldPosition
+
+    def setCollisionBox(self, collisionBox: Vector2Float):
+        self.collisionBox = collisionBox
 
     @abstractmethod
     def serialize(self) -> int:
