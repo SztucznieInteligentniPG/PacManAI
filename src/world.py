@@ -100,6 +100,7 @@ class World:
 
     def removeEntity(self, entity: Entity):
         from point import Point
+        from power_up import PowerUp
         if entity.worldPosition is not None:
             self.grid[entity.worldPosition.x][entity.worldPosition.y].remove(entity)
         entity.worldPosition = None
@@ -107,6 +108,9 @@ class World:
             self.pointsRemaining -= 1
             if self.pointsRemaining == 0:
                 self.gameState = GameState.WON
+        if isinstance(entity, PowerUp):
+            self.gameState = GameState.PSYCHODELIC
+            self.timeToChangeMode = 10.0
 
 
     def moveEntity(self, entity: Entity, position: Vector2Int):
