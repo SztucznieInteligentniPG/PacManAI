@@ -10,11 +10,25 @@ from world import World
 
 class Enemy(Actor):
     direction: Direction
-    speed = 1.0
+    modelDirection: Direction
+    speed = 3.0
+    spawn: Vector2Int = None
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
         self.direction = direction
+        self.collisionBox = Vector2Float(1, 1)
+
+        if direction is Direction.LEFT:
+            self.modelDirection = Direction.LEFT
+        else:
+            self.modelDirection = Direction.RIGHT
+
+    def setPosition(self, worldPosition: Vector2Int):
+        super().setPosition(worldPosition)
+
+        if self.spawn is None:
+            self.spawn = worldPosition
 
     def serialize(self) -> int:
         if self.direction == Direction.RIGHT:
@@ -33,11 +47,13 @@ class Enemy(Actor):
 
         distance = self.speed * deltaTime
 
+        colliding = self.checkCollidingEntities(world)
+
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
                 destination == self.worldPosition or
                 world.hasEntityOfType(destination, Wall)
-        ) and not self.isOppositeDirection(self.controller.direction):
+        ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
             if not world.hasEntityOfType(destination, Wall):
                 self.direction = self.controller.direction
@@ -55,16 +71,17 @@ class Enemy(Actor):
                 self.moveInDirection(self.direction, distance)
                 distance = 0
 
-        # placeholder dopóki nie będzie kolizji
-        if world.hasEntityOfType(self.worldPosition, Player):
-            for entity in world.getEntities(self.worldPosition):
-                if isinstance(entity, Player):
-                    entity.kill()
+        for entity in colliding:
+            if isinstance(entity, Player):
+                entity.die(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
         if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
             self.moveInDirection(self.direction, distance)
+
+        if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
+            self.modelDirection = self.direction
 
     def isOppositeDirection(self, direction: Direction) -> bool:
         if self.direction is Direction.UP and direction is Direction.DOWN or \
@@ -74,5 +91,8 @@ class Enemy(Actor):
             return True
         return False
 
+    def die(self, world: World):
+        world.moveEntity(self, self.spawn)
+
     def model(self) -> Model:
-        return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))
+        return Model(self.modelDirection, Texture.ENEMY, self.position, Vector2Float(0.5, 0.5))

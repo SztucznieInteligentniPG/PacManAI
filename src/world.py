@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from actor import Actor
     from deserialize import Deserialize
     from entity import Entity
+    from player import Player
 
     Place = list[Entity]
     Row = list[Place]
@@ -28,6 +29,7 @@ class World:
     lives: int
     gameState: GameState
     deserialize: Deserialize
+    respawning: Player
 
     def __init__(self, size: Vector2Int, deserialize: Deserialize):
         self.size = size
@@ -55,6 +57,9 @@ class World:
                 if self.gameState == GameState.RUNNING:
                     self.gameState = GameState.RUNNING_CHAOS
                 else:
+                    if self.gameState == GameState.RESPAWNING:
+                        self.putActor(self.respawning, self.respawning.spawn)
+
                     self.gameState = GameState.RUNNING
                 print(self.gameState)
                 self.timeToChangeMode = 15.0
@@ -83,13 +88,15 @@ class World:
         self.score += score
         print('Wynik:', self.score)
 
-    def getKilled(self):
+    def getKilled(self, player: Player):
         self.lives -= 1
-        if self.lives == 0:
+        if self.lives <= 0:
             self.gameState = GameState.LOST
         else:
             self.gameState = GameState.RESPAWNING
             self.timeToChangeMode = 3.0
+            self.respawning = player
+            self.removeActor(player)
 
     def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:
         result = False
@@ -111,7 +118,6 @@ class World:
         if isinstance(entity, PowerUp):
             self.gameState = GameState.PSYCHODELIC
             self.timeToChangeMode = 10.0
-
 
     def moveEntity(self, entity: Entity, position: Vector2Int):
         self.removeEntity(entity)

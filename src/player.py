@@ -1,5 +1,6 @@
 from actor import Actor
 from direction import Direction
+from enemy import Enemy
 from entity_dictionary import EntityDictionary
 from model import Model
 from point import Point
@@ -12,11 +13,18 @@ from world import World
 class Player(Actor):
     direction: Direction
     speed = 3.0
+    spawn: Vector2Int = None
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)
+
+    def setPosition(self, worldPosition: Vector2Int):
+        super().setPosition(worldPosition)
+
+        if self.spawn is None:
+            self.spawn = worldPosition
 
     def serialize(self) -> int:
         if self.direction == Direction.RIGHT:
@@ -72,12 +80,14 @@ class Player(Actor):
         for entity in colliding:
             if isinstance(entity, Point):
                 entity.collect(world)
-            #casy duchów i powerupa
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
         if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
             self.moveInDirection(self.direction, distance)
+
+    def die(self, world: World):
+        world.getKilled(self)
 
     def model(self) -> Model:
         return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))

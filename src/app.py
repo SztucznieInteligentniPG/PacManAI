@@ -5,13 +5,11 @@ import time
 from direction import Direction
 from deserialize import Deserialize
 from game_state import GameState
-from player import Player
-from point import Point
+from enemy import Enemy
 from player_controller import PlayerController
 from random_controller import RandomController
 from renderer import Renderer
 from vector2 import Vector2Int
-from wall import Wall
 from world import World
 
 HEIGHT = 800
@@ -35,25 +33,11 @@ def main():
             RandomController()
         )
     world = World(Vector2Int(19, 19), deserialize)
-    player = Player(playerController, Direction.UP)
     world.loadGrid()
-
-    '''
-    world.putEntity(Wall(), Vector2Int(5, 7))
-    world.putEntity(Wall(), Vector2Int(5, 8))
-    world.putEntity(Wall(), Vector2Int(5, 9))
-    world.putEntity(Wall(), Vector2Int(6, 9))
-    world.putEntity(Wall(), Vector2Int(7, 9))
-    world.putEntity(Wall(), Vector2Int(5, 10))
-    world.putEntity(Wall(), Vector2Int(4, 10))
-    world.putEntity(Wall(), Vector2Int(5, 11))
-    world.putEntity(Point(), Vector2Int(6, 7))
-    world.putEntity(Point(), Vector2Int(6, 8))
-    world.putEntity(Point(), Vector2Int(8, 9))
-    world.putEntity(Point(), Vector2Int(6, 10))
-    world.putEntity(Point(), Vector2Int(6, 11))
-    world.putActor(player, Vector2Int(10, 10))
-    '''
+    world.putActor(Enemy(RandomController(), Direction.UP), Vector2Int(9, 9))
+    world.putActor(Enemy(RandomController(), Direction.UP), Vector2Int(9, 9))
+    world.putActor(Enemy(RandomController(), Direction.RIGHT), Vector2Int(8, 9))
+    world.putActor(Enemy(RandomController(), Direction.LEFT), Vector2Int(10, 9))
 
     keys = []
     while True:
