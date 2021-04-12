@@ -8,6 +8,10 @@ from world import World
 
 
 class Point(Entity):
+
+    def __init__(self):
+        self.collisionBox = Vector2Float(0.1, 0.1)
+
     def serialize(self) -> int:
         return EntityDictionary.POINT.value
 

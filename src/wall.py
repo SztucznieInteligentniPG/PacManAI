@@ -7,6 +7,9 @@ from vector2 import Vector2Float
 
 
 class Wall(Entity):
+    def __init__(self):
+        self.collisionBox = Vector2Float(1,1)
+
     def serialize(self) -> int:
         return EntityDictionary.WALL.value
 

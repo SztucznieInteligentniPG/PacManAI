@@ -11,11 +11,12 @@ from world import World
 
 class Player(Actor):
     direction: Direction
-    speed = 1.0
+    speed = 3.0
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
         self.direction = direction
+        self.collisionBox = Vector2Float(1, 1)
 
     def serialize(self) -> int:
         if self.direction == Direction.RIGHT:
@@ -44,6 +45,8 @@ class Player(Actor):
 
         distance = self.speed * deltaTime
 
+        colliding = self.checkCollidingEntities(world)
+
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
             destination == self.worldPosition or
@@ -66,11 +69,10 @@ class Player(Actor):
                 self.moveInDirection(self.direction, distance)
                 distance = 0
 
-        # placeholder dopóki nie będzie kolizji
-        if world.hasEntityOfType(self.worldPosition, Point):
-            for entity in world.getEntities(self.worldPosition):
-                if isinstance(entity, Point):
-                    entity.collect(world)
+        for entity in colliding:
+            if isinstance(entity, Point):
+                entity.collect(world)
+            #casy duchów i powerupa
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
