@@ -117,6 +117,7 @@ class World:
                 self.gameState = GameState.WON
         if isinstance(entity, PowerUp):
             self.gameState = GameState.PSYCHODELIC
+            print(self.gameState)
             self.timeToChangeMode = 10.0
 
     def moveEntity(self, entity: Entity, position: Vector2Int):
