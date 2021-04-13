@@ -7,6 +7,7 @@ from direction import Direction
 from entity import Entity
 from vector2 import Vector2Int, Vector2Float
 
+
 if TYPE_CHECKING:
     from world import World
 
@@ -42,8 +43,8 @@ class Actor(Entity, ABC):
             otherUp = other.worldPosition.y - other.collisionBox.y / 2
             otherDown = other.worldPosition.y + other.collisionBox.y / 2
 
-        if (((selfLeft < otherLeft < selfRight) or (selfRight > otherRight > selfLeft)) and
-                ((selfUp < otherUp < selfDown) or (selfDown > otherDown > selfUp))):
+        if (((selfLeft <= otherLeft <= selfRight) or (selfRight >= otherRight >= selfLeft)) and
+                ((selfUp <= otherUp <= selfDown) or (selfDown >= otherDown >= selfUp))):
             return True
         return False
 
@@ -60,6 +61,7 @@ class Actor(Entity, ABC):
                     break
                 if mask[j][i] == 1 and x + i >= 0 and y + j >= 0:
                     entities = world.getEntities(Vector2Int(x + i, y + j))
+
                     for entity in entities:
                         if self.checkCollision(entity):
                             entityList.append(entity)
