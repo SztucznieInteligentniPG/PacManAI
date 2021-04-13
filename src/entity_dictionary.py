@@ -10,3 +10,7 @@ class EntityDictionary(Enum):
     PLAYER_LEFT = 5
     PLAYER_DOWN = 6
     POWER_UP = 7
+    ENEMY_RIGHT = 8
+    ENEMY_UP = 9
+    ENEMY_LEFT = 10
+    ENEMY_DOWN = 11

@@ -1,17 +1,16 @@
 from actor import Actor
 from direction import Direction
-from enemy import Enemy
 from entity_dictionary import EntityDictionary
 from model import Model
-from point import Point
 from texture import Texture
 from vector2 import Vector2Int, Vector2Float
 from wall import Wall
 from world import World
 
 
-class Player(Actor):
+class Enemy(Actor):
     direction: Direction
+    modelDirection: Direction
     speed = 3.0
     spawn: Vector2Int = None
 
@@ -19,6 +18,11 @@ class Player(Actor):
         super().__init__(controller)
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)
+
+        if direction is Direction.LEFT:
+            self.modelDirection = Direction.LEFT
+        else:
+            self.modelDirection = Direction.RIGHT
 
     def setPosition(self, worldPosition: Vector2Int):
         super().setPosition(worldPosition)
@@ -28,28 +32,18 @@ class Player(Actor):
 
     def serialize(self) -> int:
         if self.direction == Direction.RIGHT:
-            return EntityDictionary.PLAYER_RIGHT.value
+            return EntityDictionary.ENEMY_RIGHT.value
         if self.direction == Direction.UP:
-            return EntityDictionary.PLAYER_UP.value
+            return EntityDictionary.ENEMY_UP.value
         if self.direction == Direction.LEFT:
-            return EntityDictionary.PLAYER_LEFT.value
+            return EntityDictionary.ENEMY_LEFT.value
         if self.direction == Direction.DOWN:
-            return EntityDictionary.PLAYER_DOWN.value
+            return EntityDictionary.ENEMY_DOWN.value
 
     def update(self, world: World, deltaTime: float):
+        from player import Player
+
         self.controller.update(world)
-
-        # Zawracanie nie będac w środku grida może wywołać zatrzymanie się postaci
-        # i inne dziwne rzeczy więc wyączam puki co tą możliwość
-
-        # if self.direction is Direction.LEFT and self.controller.direction is Direction.RIGHT:
-        #     self.direction = Direction.RIGHT
-        # elif self.direction is Direction.RIGHT and self.controller.direction is Direction.LEFT:
-        #     self.direction = Direction.LEFT
-        # elif self.direction is Direction.UP and self.controller.direction is Direction.DOWN:
-        #     self.direction = Direction.DOWN
-        # elif self.direction is Direction.DOWN and self.controller.direction is Direction.UP:
-        #     self.direction = Direction.UP
 
         distance = self.speed * deltaTime
 
@@ -57,8 +51,8 @@ class Player(Actor):
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
-            destination == self.worldPosition or
-            world.hasEntityOfType(destination, Wall)
+                destination == self.worldPosition or
+                world.hasEntityOfType(destination, Wall)
         ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
             if not world.hasEntityOfType(destination, Wall):
@@ -69,7 +63,7 @@ class Player(Actor):
             if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
-                if self.controller.direction is not None:
+                if self.controller.direction is not None and not self.isOppositeDirection(self.controller.direction):
                     destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
                     if not world.hasEntityOfType(destination, Wall):
                         self.direction = self.controller.direction
@@ -78,16 +72,27 @@ class Player(Actor):
                 distance = 0
 
         for entity in colliding:
-            if isinstance(entity, Point):
-                entity.collect(world)
+            if isinstance(entity, Player):
+                entity.die(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
         if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
             self.moveInDirection(self.direction, distance)
 
+        if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
+            self.modelDirection = self.direction
+
+    def isOppositeDirection(self, direction: Direction) -> bool:
+        if self.direction is Direction.UP and direction is Direction.DOWN or \
+                self.direction is Direction.DOWN and direction is Direction.UP or \
+                self.direction is Direction.LEFT and direction is Direction.RIGHT or \
+                self.direction is Direction.RIGHT and direction is Direction.LEFT:
+            return True
+        return False
+
     def die(self, world: World):
-        world.getKilled(self)
+        world.moveEntity(self, self.spawn)
 
     def model(self) -> Model:
-        return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))
+        return Model(self.modelDirection, Texture.ENEMY, self.position, Vector2Float(0.5, 0.5))
