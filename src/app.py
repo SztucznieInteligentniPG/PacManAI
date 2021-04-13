@@ -34,7 +34,7 @@ def main():
         )
     world = World(Vector2Int(19, 19), deserialize)
     world.loadGrid()
-    
+
 
     keys = []
     while True:

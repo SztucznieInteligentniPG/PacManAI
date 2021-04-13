@@ -15,17 +15,14 @@ if TYPE_CHECKING:
 
 class Deserialize:
     playerController: Controller
-    ghost1: Controller
-    ghost2: Controller
-    ghost3: Controller
-    ghost4: Controller
+    enemyControllers: list[Controller] = []
 
     def __init__(self, playerController: Controller, ghost1: Controller, ghost2: Controller, ghost3: Controller, ghost4: Controller):
         self.playerController = playerController
-        self.ghost1 = ghost1
-        self.ghost2 = ghost2
-        self.ghost3 = ghost3
-        self.ghost4 = ghost4
+        self.enemyControllers.append(ghost1)
+        self.enemyControllers.append(ghost2)
+        self.enemyControllers.append(ghost3)
+        self.enemyControllers.append(ghost4)
 
     def deserialize(self, code: EntityDictionary):
         from player import Player
@@ -50,10 +47,10 @@ class Deserialize:
         if entityCode == EntityDictionary.PLAYER_RIGHT:
             return Player(self.playerController, Direction.RIGHT)
         if entityCode == EntityDictionary.ENEMY_UP:
-            return Enemy(self.ghost1, Direction.UP)
+            return Enemy(self.enemyControllers.pop(), Direction.UP)
         if entityCode == EntityDictionary.ENEMY_LEFT:
-            return Enemy(self.ghost1, Direction.LEFT)
+            return Enemy(self.enemyControllers.pop(), Direction.LEFT)
         if entityCode == EntityDictionary.ENEMY_DOWN:
-            return Enemy(self.ghost1, Direction.DOWN)
+            return Enemy(self.enemyControllers.pop(), Direction.DOWN)
         if entityCode == EntityDictionary.ENEMY_RIGHT:
-            return Enemy(self.ghost1, Direction.RIGHT)
+            return Enemy(self.enemyControllers.pop(), Direction.RIGHT)

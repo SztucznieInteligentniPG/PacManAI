@@ -38,7 +38,7 @@ class World:
         self.actors = []
         self.time = 0.0
         self.score = 0   
-        self.timeLimit = 50.0
+        self.timeLimit = 90.0
         self.timeToChangeMode = 15.0
         self.pointsRemaining = 0
         self.gameState = GameState.RUNNING
