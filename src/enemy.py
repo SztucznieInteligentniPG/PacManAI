@@ -1,6 +1,7 @@
 from actor import Actor
 from direction import Direction
 from entity_dictionary import EntityDictionary
+from game_state import GameState
 from model import Model
 from texture import Texture
 from vector2 import Vector2Int, Vector2Float
@@ -13,6 +14,7 @@ class Enemy(Actor):
     modelDirection: Direction
     speed = 3.0
     spawn: Vector2Int = None
+    is_fearful: bool
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
@@ -43,6 +45,8 @@ class Enemy(Actor):
     def update(self, world: World, deltaTime: float):
         from player import Player
 
+        self.is_fearful = world.gameState is GameState.PSYCHODELIC
+
         self.controller.update(world)
 
         distance = self.speed * deltaTime
@@ -72,7 +76,7 @@ class Enemy(Actor):
                 distance = 0
 
         for entity in colliding:
-            if isinstance(entity, Player):
+            if isinstance(entity, Player) and world.gameState is not GameState.PSYCHODELIC:
                 entity.die(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
@@ -95,4 +99,4 @@ class Enemy(Actor):
         world.moveEntity(self, self.spawn)
 
     def model(self) -> Model:
-        return Model(self.modelDirection, Texture.ENEMY, self.position, Vector2Float(0.5, 0.5))
+        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position, Vector2Float(0.5, 0.5))

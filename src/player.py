@@ -2,6 +2,7 @@ from actor import Actor
 from direction import Direction
 from enemy import Enemy
 from entity_dictionary import EntityDictionary
+from game_state import GameState
 from model import Model
 from point import Point
 from power_up import PowerUp
@@ -83,6 +84,8 @@ class Player(Actor):
                 entity.collect(world)
             if isinstance(entity, PowerUp):
                 entity.collect(world)
+            if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
+                entity.die(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
