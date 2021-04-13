@@ -11,3 +11,4 @@ class Texture(Enum):
     PACMAN_1 = pygame.image.load('img/pacman2.png')
     PACMAN_2 = pygame.image.load('img/pacman3.png')
     ENEMY = pygame.image.load('img/enemy.png')
+    ENEMY_FEARFUL = pygame.image.load('img/enemy_fearful.png')
