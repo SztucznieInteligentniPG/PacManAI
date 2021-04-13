@@ -4,6 +4,7 @@ from enemy import Enemy
 from entity_dictionary import EntityDictionary
 from model import Model
 from point import Point
+from power_up import PowerUp
 from texture import Texture
 from vector2 import Vector2Int, Vector2Float
 from wall import Wall
@@ -79,6 +80,8 @@ class Player(Actor):
 
         for entity in colliding:
             if isinstance(entity, Point):
+                entity.collect(world)
+            if isinstance(entity, PowerUp):
                 entity.collect(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)

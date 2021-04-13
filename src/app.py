@@ -34,10 +34,7 @@ def main():
         )
     world = World(Vector2Int(19, 19), deserialize)
     world.loadGrid()
-    world.putActor(Enemy(RandomController(), Direction.UP), Vector2Int(9, 9))
-    world.putActor(Enemy(RandomController(), Direction.UP), Vector2Int(9, 9))
-    world.putActor(Enemy(RandomController(), Direction.RIGHT), Vector2Int(8, 9))
-    world.putActor(Enemy(RandomController(), Direction.LEFT), Vector2Int(10, 9))
+
 
     keys = []
     while True:
