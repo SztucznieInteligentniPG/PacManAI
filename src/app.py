@@ -4,8 +4,8 @@ import time
 
 from direction import Direction
 from deserialize import Deserialize
-from game_state import GameState
 from enemy import Enemy
+from game_state import GameState
 from player_controller import PlayerController
 from random_controller import RandomController
 from renderer import Renderer
