@@ -2,9 +2,8 @@ import pygame
 import sys
 import time
 
-from direction import Direction
+from ai_controller import AiController
 from deserialize import Deserialize
-from enemy import Enemy
 from game_state import GameState
 from player_controller import PlayerController
 from random_controller import RandomController
@@ -26,15 +25,15 @@ def main():
 
     playerController = PlayerController()
     deserialize = Deserialize(
-            playerController,
+            # playerController,
+            AiController(None),
             RandomController(),
             RandomController(),
             RandomController(),
-            RandomController()
+            RandomController(),
         )
     world = World(Vector2Int(19, 19), deserialize)
     world.loadGrid()
-
 
     keys = []
     while True:
