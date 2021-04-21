@@ -8,8 +8,6 @@ from world import World
 
 
 class PowerUp(Entity):
-
-
     def __init__(self):
         self.collisionBox = Vector2Float(0.2, 0.2)
 
