@@ -14,3 +14,4 @@ class EntityDictionary(Enum):
     ENEMY_UP = 9
     ENEMY_LEFT = 10
     ENEMY_DOWN = 11
+    BLOCKADE = 12
