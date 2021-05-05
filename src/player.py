@@ -15,7 +15,7 @@ from world import World
 class Player(Actor):
     direction: Direction
     speed = 3.0
-    spawn: Vector2Int = None
+    spawn: Vector2Int = Vector2Int(3, 3)
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
@@ -24,9 +24,6 @@ class Player(Actor):
 
     def setPosition(self, worldPosition: Vector2Int):
         super().setPosition(worldPosition)
-
-        if self.spawn is None:
-            self.spawn = worldPosition
 
     def serialize(self) -> int:
         if self.direction == Direction.RIGHT:
@@ -59,8 +56,8 @@ class Player(Actor):
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
-            destination == self.worldPosition or
-            world.hasEntityOfType(destination, Wall)
+                destination == self.worldPosition or
+                world.hasEntityOfType(destination, Wall)
         ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
             if not world.hasEntityOfType(destination, Wall):
@@ -80,9 +77,7 @@ class Player(Actor):
                 distance = 0
 
         for entity in colliding:
-            if isinstance(entity, Point):
-                entity.collect(world)
-            if isinstance(entity, PowerUp):
+            if isinstance(entity, Point) or isinstance(entity, PowerUp):
                 entity.collect(world)
             if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
                 entity.die(world)

@@ -12,7 +12,7 @@ class Blockade(Entity, ABC):
 
     def __init__(self):
         super().__init__()
-        self.isClosed = True
+        self.isClosed = False
         self.collisionBox = Vector2Float(0.5, 0.5)      # stoi w drzwiach tylko
 
     def serialize(self) -> int:

@@ -14,7 +14,7 @@ class Enemy(Actor):
     direction: Direction
     modelDirection: Direction
     speed = 3.0
-    spawn: Vector2Int = None
+    spawn: Vector2Int = Vector2Int(8,9)
     is_fearful: bool
 
     def __init__(self, controller, direction: Direction):
@@ -80,7 +80,7 @@ class Enemy(Actor):
                 distance = 0
 
         for entity in colliding:
-            if isinstance(entity, Player) and world.gameState is not GameState.PSYCHODELIC:
+            if isinstance(entity, Player) and not self.is_fearful:
                 entity.die(world)
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)

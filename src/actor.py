@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 class Actor(Entity, ABC):
     controller: Controller
     position: Vector2Float = None
+    spawn: Vector2Int = None
 
     def __init__(self, controller: Controller):
         super().__init__()
