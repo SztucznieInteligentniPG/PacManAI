@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from blockade import Blockade
 from direction import Direction
 from enemy import Enemy
 from entity_dictionary import EntityDictionary
@@ -54,3 +55,5 @@ class Deserialize:
             return Enemy(self.enemyControllers.pop(), Direction.DOWN)
         if entityCode == EntityDictionary.ENEMY_RIGHT:
             return Enemy(self.enemyControllers.pop(), Direction.RIGHT)
+        if entityCode == EntityDictionary.BLOCKADE:
+            return Blockade()

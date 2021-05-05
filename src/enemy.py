@@ -1,4 +1,5 @@
 from actor import Actor
+from blockade import Blockade
 from direction import Direction
 from entity_dictionary import EntityDictionary
 from game_state import GameState
@@ -56,20 +57,23 @@ class Enemy(Actor):
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
                 destination == self.worldPosition or
-                world.hasEntityOfType(destination, Wall)
+                world.hasEntityOfType(destination, Wall) or
+                world.hasBlockade(destination, self.position)
         ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-            if not world.hasEntityOfType(destination, Wall):
+            if not world.hasEntityOfType(destination, Wall) and not world.hasBlockade(destination, self.position):
                 self.direction = self.controller.direction
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
+        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall) and \
+                not world.hasBlockade(destination, self.position):
             distanceToDestination: float = self.getDistanceTo(destination)
             if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
                 if self.controller.direction is not None and not self.isOppositeDirection(self.controller.direction):
                     destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                    if not world.hasEntityOfType(destination, Wall):
+                    if not world.hasEntityOfType(destination, Wall) and \
+                            not world.hasBlockade(destination, self.position):
                         self.direction = self.controller.direction
             else:
                 self.moveInDirection(self.direction, distance)
@@ -81,7 +85,8 @@ class Enemy(Actor):
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
+        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall) and \
+                not world.hasBlockade(destination, self.position):
             self.moveInDirection(self.direction, distance)
 
         if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
@@ -99,4 +104,5 @@ class Enemy(Actor):
         world.moveEntity(self, self.spawn)
 
     def model(self) -> Model:
-        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position, Vector2Float(0.5, 0.5))
+        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position,
+                     Vector2Float(0.5, 0.5))
