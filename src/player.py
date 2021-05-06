@@ -97,3 +97,6 @@ class Player(Actor):
 
     def model(self) -> Model:
         return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))
+
+    def maximumSafeUpdateTime(self) -> float:
+        return 1.0 / self.speed

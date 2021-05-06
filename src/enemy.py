@@ -106,3 +106,6 @@ class Enemy(Actor):
     def model(self) -> Model:
         return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position,
                      Vector2Float(0.5, 0.5))
+
+    def maximumSafeUpdateTime(self) -> float:
+        return 1.0 / self.speed
