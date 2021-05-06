@@ -80,6 +80,9 @@ class Actor(Entity, ABC):
         elif direction is Direction.LEFT:
             self.position.x -= distance
 
+    def isWalkable(self, world: World, position: Vector2Int):
+        pass
+
     @abstractmethod
     def update(self, world: World, deltaTime: float):
         pass

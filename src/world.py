@@ -108,30 +108,6 @@ class World:
                 result = True
         return result
 
-    def hasBlockadeOrWall(self, position: Vector2Int):
-        result = False
-        for entity in self.getEntities(position):
-            if isinstance(entity, Wall) or isinstance(entity, Blockade):
-                result = True
-        return result
-
-    def isInaccesibleToEnemy(self, position: Vector2Int, destination: Vector2Int):
-        isDestinationBlockade = False
-        for destEntity in self.getEntities(destination):
-            if isinstance(destEntity, Wall):
-                return True
-            if isinstance(destEntity, Blockade):
-                isDestinationBlockade = True
-
-        if not isDestinationBlockade:
-            return False
-
-        for entity in self.getEntities(position):
-            if isinstance(entity, Blockade):
-                return False
-
-        return True
-
     def removeEntity(self, entity: Entity):
         from point import Point
         from power_up import PowerUp

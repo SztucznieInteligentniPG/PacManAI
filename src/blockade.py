@@ -21,5 +21,5 @@ class Blockade(Entity, ABC):
             Direction.DEFAULT,
             Texture.BLOCKADE,
             Vector2Float(self.worldPosition.x, self.worldPosition.y),
-            Vector2Float(0.5, 0.5),
+            Vector2Float(1.0, 1.0),
         )
