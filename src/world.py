@@ -8,6 +8,7 @@ from direction import Direction
 from game_state import GameState
 from vector2 import Vector2Int
 from vector2 import Vector2Float
+from wall import Wall
 
 if TYPE_CHECKING:
     from actor import Actor
@@ -33,7 +34,6 @@ class World:
     gameState: GameState
     deserialize: Deserialize
     respawning: Player
-    blockade: Blockade
     log: bool
 
     def __init__(self, size: Vector2Int, deserialize: Deserialize, log=False):
@@ -62,7 +62,6 @@ class World:
             if self.timeToChangeMode <= 0:
                 if self.gameState == GameState.RUNNING:
                     self.gameState = GameState.RUNNING_CHAOS
-                    self.blockade.setIsClosed(False)    # dla testu jedynie, bedzie zrobione properly w respawnie
                 else:
                     if self.gameState == GameState.RESPAWNING:
                         self.putActor(self.respawning, self.respawning.spawn)
@@ -113,13 +112,6 @@ class World:
             if isinstance(entity, entityType):
                 result = True
         return result
-
-    def hasBlockade(self, position: Vector2Int, enemyPosition: Vector2Float) -> bool:
-        for entity in self.getEntities(position):
-            if isinstance(entity, Blockade):
-                if entity.isClosed or entity.worldPosition.y > enemyPosition.y:
-                    return True
-        return False
 
     def removeEntity(self, entity: Entity):
         from point import Point

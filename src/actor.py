@@ -81,6 +81,10 @@ class Actor(Entity, ABC):
         elif direction is Direction.LEFT:
             self.position.x -= distance
 
+
+    def isWalkable(self, world: World, position: Vector2Int) -> bool:
+        return True
+
     def maximumSafeUpdateTime(self) -> float:
         return math.inf
 
