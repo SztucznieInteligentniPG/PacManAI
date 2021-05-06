@@ -57,23 +57,20 @@ class Enemy(Actor):
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
                 destination == self.worldPosition or
-                world.hasEntityOfType(destination, Wall) or
-                world.hasBlockade(destination, self.position)
+                world.isInaccesibleToEnemy(self.worldPosition, destination)
         ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-            if not world.hasEntityOfType(destination, Wall) and not world.hasBlockade(destination, self.position):
+            if not world.isInaccesibleToEnemy(self.worldPosition, destination):
                 self.direction = self.controller.direction
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall) and \
-                not world.hasBlockade(destination, self.position):
+        if destination != self.worldPosition and not world.isInaccesibleToEnemy(self.worldPosition, destination):
             distanceToDestination: float = self.getDistanceTo(destination)
             if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
                 if self.controller.direction is not None and not self.isOppositeDirection(self.controller.direction):
                     destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                    if not world.hasEntityOfType(destination, Wall) and \
-                            not world.hasBlockade(destination, self.position):
+                    if not world.isInaccesibleToEnemy(self.worldPosition, destination):
                         self.direction = self.controller.direction
             else:
                 self.moveInDirection(self.direction, distance)
@@ -85,8 +82,7 @@ class Enemy(Actor):
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall) and \
-                not world.hasBlockade(destination, self.position):
+        if destination != self.worldPosition and not world.isInaccesibleToEnemy(self.worldPosition, destination):
             self.moveInDirection(self.direction, distance)
 
         if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
