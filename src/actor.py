@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import math
 from typing import TYPE_CHECKING
 
 from controller import Controller
@@ -80,8 +81,12 @@ class Actor(Entity, ABC):
         elif direction is Direction.LEFT:
             self.position.x -= distance
 
+
     def isWalkable(self, world: World, position: Vector2Int) -> bool:
         return True
+
+    def maximumSafeUpdateTime(self) -> float:
+        return math.inf
 
     @abstractmethod
     def update(self, world: World, deltaTime: float):

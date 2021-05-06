@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+import math
 from typing import TYPE_CHECKING
 
 from blockade import Blockade
@@ -33,20 +34,22 @@ class World:
     gameState: GameState
     deserialize: Deserialize
     respawning: Player
+    log: bool
 
-    def __init__(self, size: Vector2Int, deserialize: Deserialize):
+    def __init__(self, size: Vector2Int, deserialize: Deserialize, log=False):
         self.size = size
 
         self.grid = [[[] for _ in range(size.y)] for _ in range(size.x)]
         self.actors = []
         self.time = 0.0
-        self.score = 0   
+        self.score = 0
         self.timeLimit = 90.0
         self.timeToChangeMode = 15.0
         self.pointsRemaining = 0
         self.gameState = GameState.RUNNING
         self.lives = 3
         self.deserialize = deserialize
+        self.log = log
 
     def update(self, deltaTime: float):
         if self.gameState is not GameState.LOST and self.gameState is not GameState.WON:
@@ -64,7 +67,8 @@ class World:
                         self.putActor(self.respawning, self.respawning.spawn)
 
                     self.gameState = GameState.RUNNING
-                print(self.gameState)
+                if self.log:
+                    print(self.gameState)
                 self.timeToChangeMode = 15.0
 
     def putActor(self, actor: Actor, position: Vector2Int):
@@ -89,7 +93,8 @@ class World:
 
     def addScore(self, score: int):
         self.score += score
-        print('Wynik:', self.score)
+        if self.log:
+            print('Wynik:', self.score)
 
     def getKilled(self, player: Player):
         self.lives -= 1
@@ -120,7 +125,8 @@ class World:
                 self.gameState = GameState.WON
         if isinstance(entity, PowerUp):
             self.gameState = GameState.PSYCHODELIC
-            print(self.gameState)
+            if self.log:
+                print(self.gameState)
             self.timeToChangeMode = 10.0
 
     def moveEntity(self, entity: Entity, position: Vector2Int):
@@ -130,7 +136,7 @@ class World:
     def getPositionInDirection(self, position: Vector2Int, direction: Direction) -> Vector2Int:
         destinationX: int = position.x
         destinationY: int = position.y
-        
+
         if direction is Direction.LEFT:
             destinationX -= 1
         elif direction is Direction.RIGHT:
@@ -159,11 +165,9 @@ class World:
         data = json.load(f)
         grid = data["grid"]
 
-        i = 0
-        j = 0
-        for row in grid:
-            j=0
-            for place in row:
+        for i in range(self.size.y):
+            for j in range(self.size.x):
+                place = grid[i][j]
                 for entityCode in place:
                     entity = self.deserialize.deserialize(entityCode)
                     if isinstance(entity, Actor):
@@ -174,7 +178,12 @@ class World:
                     elif entity is not None:
                         self.putEntity(entity, Vector2Int(j, i))
 
-                j += 1
-            i += 1
+    def maximumSafeUpdateTime(self) -> float:
+        updateTime = math.inf
 
+        for actor in self.actors:
+            actorUpdateTime = actor.maximumSafeUpdateTime()
+            if actorUpdateTime < updateTime:
+                updateTime = actorUpdateTime
 
+        return updateTime
