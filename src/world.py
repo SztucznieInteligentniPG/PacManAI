@@ -197,29 +197,26 @@ class World:
         from player import Player
         from point import Point
         from power_up import PowerUp
-        tensor = np.array(np.zeros((1, 19, 19, 10)))
-        i = 0
-        for row in self.grid:
-            j = 0
-            for place in row:
+        tensor = np.zeros((1, 19, 19, 10))
+        for x, column in enumerate(self.grid):
+            for y, place in enumerate(column):
                 for entity in place:
                     if isinstance(entity, Wall):
-                        tensor[0][i][j][0] = 1
+                        tensor[0][x][y][0] = 1
                     if isinstance(entity, Blockade):
-                        tensor[0][i][j][1] = 1
+                        tensor[0][x][y][1] = 1
                     if isinstance(entity, Point):
-                        tensor[0][i][j][2] = 1
+                        tensor[0][x][y][2] = 1
                     if isinstance(entity, PowerUp):
-                        tensor[0][i][j][3] = 1
+                        tensor[0][x][y][3] = 1
                     if isinstance(entity, Player):
-                        tensor[0][i][j][4] = 1
+                        tensor[0][x][y][4] = 1
                     if isinstance(entity, Enemy):
                         if entity.is_fearful:
-                            tensor[0][i][j][9] = 1
+                            tensor[0][x][y][9] = 1
                         else:
-                            tensor[0][i][j][5+entity.id] = 1
-                j += 1
-            i += 1
+                            tensor[0][x][y][5+entity.id] = 1
+               
         return tensor
 
 
