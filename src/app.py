@@ -32,8 +32,10 @@ def main():
             RandomController(),
             RandomController(),
         )
-    world = World(Vector2Int(19, 19), deserialize)
+    world = World(Vector2Int(19, 19), deserialize, True)
     world.loadGrid()
+
+    safeDeltaTime = world.maximumSafeUpdateTime()
 
     keys = []
     while True:
@@ -58,11 +60,34 @@ def main():
                 keys.remove(event.key)
 
         deltaTime = clock.tick(60) / 1000.0
+        deltaTime = safeDeltaTime if deltaTime > safeDeltaTime else deltaTime
 
         playerController.updateKeys(keys)
         world.update(deltaTime)
 
         renderer.render(world)
+
+
+def trainPlayer(weights) -> int:
+    deserialize = Deserialize(
+            AiController(weights),
+            RandomController(),
+            RandomController(),
+            RandomController(),
+            RandomController(),
+        )
+    world = World(Vector2Int(19, 19), deserialize)
+    world.loadGrid()
+
+    deltaTime = world.maximumSafeUpdateTime()
+
+    while True:
+        if world.gameState == GameState.WON or world.gameState == GameState.LOST:
+            break
+
+        world.update(deltaTime)
+
+    return world.score
 
 
 if __name__ == '__main__':

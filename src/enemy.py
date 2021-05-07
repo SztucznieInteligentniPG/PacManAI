@@ -57,23 +57,20 @@ class Enemy(Actor):
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
                 destination == self.worldPosition or
-                world.hasEntityOfType(destination, Wall) or
-                world.hasBlockade(destination, self.position)
+                not self.isWalkable(world, destination)
         ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-            if not world.hasEntityOfType(destination, Wall) and not world.hasBlockade(destination, self.position):
+            if self.isWalkable(world, destination):
                 self.direction = self.controller.direction
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall) and \
-                not world.hasBlockade(destination, self.position):
+        if destination != self.worldPosition and self.isWalkable(world, destination):
             distanceToDestination: float = self.getDistanceTo(destination)
             if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
                 if self.controller.direction is not None and not self.isOppositeDirection(self.controller.direction):
                     destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                    if not world.hasEntityOfType(destination, Wall) and \
-                            not world.hasBlockade(destination, self.position):
+                    if self.isWalkable(world, destination):
                         self.direction = self.controller.direction
             else:
                 self.moveInDirection(self.direction, distance)
@@ -85,8 +82,7 @@ class Enemy(Actor):
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall) and \
-                not world.hasBlockade(destination, self.position):
+        if destination != self.worldPosition and self.isWalkable(world, destination):
             self.moveInDirection(self.direction, distance)
 
         if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
@@ -100,9 +96,21 @@ class Enemy(Actor):
             return True
         return False
 
+    def isWalkable(self, world: World, position: Vector2Int) -> bool:
+        if world.hasEntityOfType(position, Wall):
+            return False
+
+        if world.hasEntityOfType(position, Blockade) and not world.hasEntityOfType(self.worldPosition, Blockade):
+            return False
+
+        return True
+
     def die(self, world: World):
         world.moveEntity(self, self.spawn)
 
     def model(self) -> Model:
         return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position,
                      Vector2Float(0.5, 0.5))
+
+    def maximumSafeUpdateTime(self) -> float:
+        return 1.0 / self.speed

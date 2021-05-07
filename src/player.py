@@ -1,4 +1,5 @@
 from actor import Actor
+from blockade import Blockade
 from direction import Direction
 from enemy import Enemy
 from entity_dictionary import EntityDictionary
@@ -57,20 +58,20 @@ class Player(Actor):
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
         if self.controller.direction is not None and (
                 destination == self.worldPosition or
-                world.hasEntityOfType(destination, Wall)
+                not self.isWalkable(world, destination)
         ):
             destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-            if not world.hasEntityOfType(destination, Wall):
+            if self.isWalkable(world, destination):
                 self.direction = self.controller.direction
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
+        if destination != self.worldPosition and self.isWalkable(world, destination):
             distanceToDestination: float = self.getDistanceTo(destination)
             if distance >= distanceToDestination:
                 distance -= distanceToDestination
                 world.moveEntity(self, destination)
                 if self.controller.direction is not None:
                     destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                    if not world.hasEntityOfType(destination, Wall):
+                    if self.isWalkable(world, destination):
                         self.direction = self.controller.direction
             else:
                 self.moveInDirection(self.direction, distance)
@@ -84,11 +85,19 @@ class Player(Actor):
 
         destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-        if destination != self.worldPosition and not world.hasEntityOfType(destination, Wall):
+        if destination != self.worldPosition and self.isWalkable(world, destination):
             self.moveInDirection(self.direction, distance)
+
+    def isWalkable(self, world: World, position: Vector2Int) -> bool:
+        if world.hasEntityOfType(position, Blockade) or world.hasEntityOfType(position, Wall):
+            return False
+        return True
 
     def die(self, world: World):
         world.getKilled(self)
 
     def model(self) -> Model:
         return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))
+
+    def maximumSafeUpdateTime(self) -> float:
+        return 1.0 / self.speed

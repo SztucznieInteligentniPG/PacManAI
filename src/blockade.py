@@ -8,12 +8,10 @@ from vector2 import Vector2Float
 
 
 class Blockade(Entity, ABC):
-    isClosed: bool
 
     def __init__(self):
         super().__init__()
-        self.isClosed = False
-        self.collisionBox = Vector2Float(0.5, 0.5)      # stoi w drzwiach tylko
+        self.collisionBox = Vector2Float(0.5, 0.5)
 
     def serialize(self) -> int:
         return EntityDictionary.BLOCKADE.value
@@ -23,8 +21,5 @@ class Blockade(Entity, ABC):
             Direction.DEFAULT,
             Texture.BLOCKADE,
             Vector2Float(self.worldPosition.x, self.worldPosition.y),
-            Vector2Float(0.5, 0.5),
+            Vector2Float(1.0, 1.0),
         )
-
-    def setIsClosed(self, action):
-        self.isClosed = action
