@@ -48,12 +48,12 @@ class Deserialize:
         if entityCode == EntityDictionary.PLAYER_RIGHT:
             return Player(self.playerController, Direction.RIGHT)
         if entityCode == EntityDictionary.ENEMY_UP:
-            return Enemy(self.enemyControllers.pop(), Direction.UP)
+            return Enemy(self.enemyControllers.pop(), Direction.UP, 3)
         if entityCode == EntityDictionary.ENEMY_LEFT:
-            return Enemy(self.enemyControllers.pop(), Direction.LEFT)
+            return Enemy(self.enemyControllers.pop(), Direction.LEFT, 6)
         if entityCode == EntityDictionary.ENEMY_DOWN:
-            return Enemy(self.enemyControllers.pop(), Direction.DOWN)
+            return Enemy(self.enemyControllers.pop(), Direction.DOWN, 9)
         if entityCode == EntityDictionary.ENEMY_RIGHT:
-            return Enemy(self.enemyControllers.pop(), Direction.RIGHT)
+            return Enemy(self.enemyControllers.pop(), Direction.RIGHT, 12)
         if entityCode == EntityDictionary.BLOCKADE:
             return Blockade()

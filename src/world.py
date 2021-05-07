@@ -1,14 +1,13 @@
 from __future__ import annotations
 import json
 import math
+from time import sleep
 from typing import TYPE_CHECKING
 
 from blockade import Blockade
 from direction import Direction
 from game_state import GameState
 from vector2 import Vector2Int
-from vector2 import Vector2Float
-from wall import Wall
 
 if TYPE_CHECKING:
     from actor import Actor
@@ -46,7 +45,6 @@ class World:
         self.score = 0
         self.timeLimit = 90.0
         self.timeToChangeMode = 15.0
-        self.timeToOpen = 0.0
         self.pointsRemaining = 0
         self.gameState = GameState.RUNNING
         self.lives = 3
@@ -62,25 +60,16 @@ class World:
                 self.gameState = GameState.LOST
             self.timeToChangeMode -= deltaTime
 
-            if self.gameState == GameState.RESPAWNING or self.timeToOpen > 0:
-                if not self.blockade.isClosed and self.gameState == GameState.RESPAWNING:
-                    self.blockade.setIsClosed(True)
-                    self.timeToOpen = 5.0
-                    for actor in self.actors:
-                        self.moveEntity(actor, actor.spawn)
-                    self.putActor(self.respawning, self.respawning.spawn)
-                    self.respawning.direction = None
+            if self.gameState == GameState.RESPAWNING:
+                for enemy in self.actors:
+                    enemy.wakeUp()
+                self.respawning.direction = Direction.RIGHT
+                self.putActor(self.respawning, self.respawning.spawn)
+                sleep(1)
+                self.gameState = GameState.RUNNING
+                self.timeToChangeMode = 15.0
 
-                if self.timeToOpen >= 0:
-                    self.timeToOpen -= deltaTime
-
-                if self.timeToOpen <= 0:
-                    self.blockade.setIsClosed(False)
-                    if self.gameState == GameState.RESPAWNING:
-                        self.gameState = GameState.RUNNING
-                        self.timeToChangeMode = 15.0
-
-            elif self.timeToChangeMode <= 0:
+            if self.timeToChangeMode <= 0:
                 if self.gameState == GameState.RUNNING:
                     self.gameState = GameState.RUNNING_CHAOS
                 else:
@@ -121,9 +110,11 @@ class World:
         if self.lives <= 0:
             self.gameState = GameState.LOST
         else:
-            self.gameState = GameState.RESPAWNING
             self.respawning = player
             self.removeActor(player)
+            for enemy in self.actors:
+                enemy.respawn(self)
+            self.gameState = GameState.RESPAWNING
 
     def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:
         result = False

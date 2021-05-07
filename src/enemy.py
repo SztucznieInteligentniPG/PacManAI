@@ -1,3 +1,5 @@
+import math
+
 from actor import Actor
 from blockade import Blockade
 from direction import Direction
@@ -14,14 +16,18 @@ class Enemy(Actor):
     direction: Direction
     modelDirection: Direction
     speed = 3.0
-    spawn: Vector2Int = Vector2Int(8,9)
+    spawn: Vector2Int = Vector2Int(8, 9)
+    spawnDelay: float
+    coolDown: float
     is_fearful: bool
 
-    def __init__(self, controller, direction: Direction):
+    def __init__(self, controller, direction: Direction, delay: float):
         super().__init__(controller)
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)
-
+        self.spawnDelay = delay
+        self.coolDown = delay
+        self.is_fearful = False
         if direction is Direction.LEFT:
             self.modelDirection = Direction.LEFT
         else:
@@ -48,45 +54,49 @@ class Enemy(Actor):
 
         self.is_fearful = world.gameState is GameState.PSYCHODELIC
 
-        self.controller.update(world)
+        if self.coolDown > 0:
+            self.coolDown -= deltaTime
+        else:
+            self.controller.update(world)
 
-        distance = self.speed * deltaTime
+            distance = self.speed * deltaTime
 
-        colliding = self.checkCollidingEntities(world)
+            colliding = self.checkCollidingEntities(world)
 
-        destination = world.getPositionInDirection(self.worldPosition, self.direction)
-        if self.controller.direction is not None and (
-                destination == self.worldPosition or
-                not self.isWalkable(world, destination)
-        ):
-            destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-            if self.isWalkable(world, destination):
-                self.direction = self.controller.direction
+            destination = world.getPositionInDirection(self.worldPosition, self.direction)
+            if self.controller.direction is not None and (
+                    destination == self.worldPosition or
+                    not self.isWalkable(world, destination)
+            ):
+                destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                if self.isWalkable(world, destination):
+                    self.direction = self.controller.direction
 
-        if destination != self.worldPosition and self.isWalkable(world, destination):
-            distanceToDestination: float = self.getDistanceTo(destination)
-            if distance >= distanceToDestination:
-                distance -= distanceToDestination
-                world.moveEntity(self, destination)
-                if self.controller.direction is not None and not self.isOppositeDirection(self.controller.direction):
-                    destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                    if self.isWalkable(world, destination):
-                        self.direction = self.controller.direction
-            else:
+            if destination != self.worldPosition and self.isWalkable(world, destination):
+                distanceToDestination: float = self.getDistanceTo(destination)
+                if distance >= distanceToDestination:
+                    distance -= distanceToDestination
+                    world.moveEntity(self, destination)
+                    if self.controller.direction is not None and not self.isOppositeDirection(
+                            self.controller.direction):
+                        destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                        if self.isWalkable(world, destination):
+                            self.direction = self.controller.direction
+                else:
+                    self.moveInDirection(self.direction, distance)
+                    distance = 0
+
+            for entity in colliding:
+                if isinstance(entity, Player) and not self.is_fearful:
+                    entity.die(world)
+
+            destination = world.getPositionInDirection(self.worldPosition, self.direction)
+
+            if destination != self.worldPosition and self.isWalkable(world, destination):
                 self.moveInDirection(self.direction, distance)
-                distance = 0
 
-        for entity in colliding:
-            if isinstance(entity, Player) and not self.is_fearful:
-                entity.die(world)
-
-        destination = world.getPositionInDirection(self.worldPosition, self.direction)
-
-        if destination != self.worldPosition and self.isWalkable(world, destination):
-            self.moveInDirection(self.direction, distance)
-
-        if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
-            self.modelDirection = self.direction
+            if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
+                self.modelDirection = self.direction
 
     def isOppositeDirection(self, direction: Direction) -> bool:
         if self.direction is Direction.UP and direction is Direction.DOWN or \
@@ -107,6 +117,13 @@ class Enemy(Actor):
 
     def die(self, world: World):
         world.moveEntity(self, self.spawn)
+
+    def respawn(self, world: World):
+        world.moveEntity(self, self.spawn)
+        self.coolDown = math.inf
+
+    def wakeUp(self):
+        self.coolDown = self.spawnDelay
 
     def model(self) -> Model:
         return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position,
