@@ -19,14 +19,17 @@ class Enemy(Actor):
     spawnDelay: float
     cooldown: float
     is_fearful: bool
+    id: int
 
-    def __init__(self, controller, direction: Direction, delay: float):
+    def __init__(self, controller, direction: Direction, id: int, , delay: float):
         super().__init__(controller)
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)
+        self.id = id
         self.spawnDelay = delay
         self.cooldown = delay
         self.is_fearful = False
+
         if direction is Direction.LEFT:
             self.modelDirection = Direction.LEFT
         else:
