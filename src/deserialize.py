@@ -16,14 +16,12 @@ if TYPE_CHECKING:
 
 class Deserialize:
     playerController: Controller
-    enemyControllers: list[Controller] = []
+    enemyControllers: list[Controller]
+    cooldowns: list[float] = [3.0, 6.0, 9.0, 12.0]
 
     def __init__(self, playerController: Controller, ghost1: Controller, ghost2: Controller, ghost3: Controller, ghost4: Controller):
         self.playerController = playerController
-        self.enemyControllers.append(ghost1)
-        self.enemyControllers.append(ghost2)
-        self.enemyControllers.append(ghost3)
-        self.enemyControllers.append(ghost4)
+        self.enemyControllers = [ghost1, ghost2, ghost3, ghost4]
 
     def deserialize(self, code: EntityDictionary):
         from player import Player
@@ -48,12 +46,12 @@ class Deserialize:
         if entityCode == EntityDictionary.PLAYER_RIGHT:
             return Player(self.playerController, Direction.RIGHT)
         if entityCode == EntityDictionary.ENEMY_UP:
-            return Enemy(self.enemyControllers.pop(), Direction.UP, (3-len(self.enemyControllers)))
+            return Enemy(self.enemyControllers.pop(0), Direction.UP, 3 - len(self.enemyControllers), self.cooldowns.pop(0))
         if entityCode == EntityDictionary.ENEMY_LEFT:
-            return Enemy(self.enemyControllers.pop(), Direction.LEFT, (3-len(self.enemyControllers)))
+            return Enemy(self.enemyControllers.pop(0), Direction.LEFT, 3 - len(self.enemyControllers), self.cooldowns.pop(0))
         if entityCode == EntityDictionary.ENEMY_DOWN:
-            return Enemy(self.enemyControllers.pop(), Direction.DOWN, (3-len(self.enemyControllers)))
+            return Enemy(self.enemyControllers.pop(0), Direction.DOWN, 3 - len(self.enemyControllers), self.cooldowns.pop(0))
         if entityCode == EntityDictionary.ENEMY_RIGHT:
-            return Enemy(self.enemyControllers.pop(), Direction.RIGHT, (3-len(self.enemyControllers)))
+            return Enemy(self.enemyControllers.pop(0), Direction.RIGHT, 3 - len(self.enemyControllers), self.cooldowns.pop(0))
         if entityCode == EntityDictionary.BLOCKADE:
             return Blockade()

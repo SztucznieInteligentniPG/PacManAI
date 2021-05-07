@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 class Actor(Entity, ABC):
     controller: Controller
     position: Vector2Float = None
+    spawn: Vector2Int = None
 
     def __init__(self, controller: Controller):
         super().__init__()
@@ -90,4 +91,12 @@ class Actor(Entity, ABC):
 
     @abstractmethod
     def update(self, world: World, deltaTime: float):
+        pass
+
+    @abstractmethod
+    def wakeUp(self):
+        pass
+
+    @abstractmethod
+    def respawn(self, world: World):
         pass
