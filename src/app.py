@@ -34,7 +34,7 @@ def main():
         )
     world = World(Vector2Int(19, 19), deserialize, True)
     world.loadGrid()
-    world.generateTensor()
+    t = world.generateTensor()
 
     safeDeltaTime = world.maximumSafeUpdateTime()
 
