@@ -7,8 +7,6 @@ from blockade import Blockade
 from direction import Direction
 from game_state import GameState
 from vector2 import Vector2Int
-from vector2 import Vector2Float
-from wall import Wall
 
 if TYPE_CHECKING:
     from actor import Actor
@@ -59,14 +57,16 @@ class World:
             if self.time >= self.timeLimit:
                 self.gameState = GameState.LOST
             self.timeToChangeMode -= deltaTime
+
             if self.timeToChangeMode <= 0:
                 if self.gameState == GameState.RUNNING:
                     self.gameState = GameState.RUNNING_CHAOS
                 else:
                     if self.gameState == GameState.RESPAWNING:
-                        self.putActor(self.respawning, self.respawning.spawn)
-
+                        for actor in self.actors:
+                            actor.wakeUp()
                     self.gameState = GameState.RUNNING
+
                 if self.log:
                     print(self.gameState)
                 self.timeToChangeMode = 15.0
@@ -101,10 +101,13 @@ class World:
         if self.lives <= 0:
             self.gameState = GameState.LOST
         else:
-            self.gameState = GameState.RESPAWNING
-            self.timeToChangeMode = 3.0
             self.respawning = player
             self.removeActor(player)
+            for enemy in self.actors:
+                enemy.respawn(self)
+            self.respawning.respawn(self)
+            self.gameState = GameState.RESPAWNING
+            self.timeToChangeMode = 3.0
 
     def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:
         result = False
