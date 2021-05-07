@@ -25,8 +25,8 @@ def main():
 
     playerController = PlayerController()
     deserialize = Deserialize(
-            # playerController,
-            AiController(None),
+            playerController,
+            #AiController(None),
             RandomController(),
             RandomController(),
             RandomController(),

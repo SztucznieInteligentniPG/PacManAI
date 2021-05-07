@@ -93,8 +93,10 @@ class Actor(Entity, ABC):
     def update(self, world: World, deltaTime: float):
         pass
 
+    @abstractmethod
     def wakeUp(self):
         pass
 
+    @abstractmethod
     def respawn(self, world: World):
         pass

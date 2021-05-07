@@ -16,9 +16,8 @@ class Enemy(Actor):
     direction: Direction
     modelDirection: Direction
     speed = 3.0
-    spawn: Vector2Int = Vector2Int(8, 9)
     spawnDelay: float
-    coolDown: float
+    cooldown: float
     is_fearful: bool
 
     def __init__(self, controller, direction: Direction, delay: float):
@@ -26,7 +25,7 @@ class Enemy(Actor):
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)
         self.spawnDelay = delay
-        self.coolDown = delay
+        self.cooldown = delay
         self.is_fearful = False
         if direction is Direction.LEFT:
             self.modelDirection = Direction.LEFT
@@ -54,8 +53,8 @@ class Enemy(Actor):
 
         self.is_fearful = world.gameState is GameState.PSYCHODELIC
 
-        if self.coolDown > 0:
-            self.coolDown -= deltaTime
+        if self.cooldown > 0:
+            self.cooldown -= deltaTime
         else:
             self.controller.update(world)
 
@@ -120,10 +119,10 @@ class Enemy(Actor):
 
     def respawn(self, world: World):
         world.moveEntity(self, self.spawn)
-        self.coolDown = math.inf
+        self.cooldown = math.inf
 
     def wakeUp(self):
-        self.coolDown = self.spawnDelay
+        self.cooldown = self.spawnDelay
 
     def model(self) -> Model:
         return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position,

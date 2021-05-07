@@ -1,7 +1,6 @@
 from __future__ import annotations
 import json
 import math
-from time import sleep
 from typing import TYPE_CHECKING
 
 from blockade import Blockade
@@ -28,7 +27,6 @@ class World:
     score: int
     timeLimit: float
     timeToChangeMode: float
-    timeToOpen: float
     pointsRemaining: int
     lives: int
     gameState: GameState
@@ -60,22 +58,15 @@ class World:
                 self.gameState = GameState.LOST
             self.timeToChangeMode -= deltaTime
 
-            if self.gameState == GameState.RESPAWNING:
-                for enemy in self.actors:
-                    enemy.wakeUp()
-                self.respawning.direction = Direction.RIGHT
-                self.putActor(self.respawning, self.respawning.spawn)
-                sleep(1)
-                self.gameState = GameState.RUNNING
-                self.timeToChangeMode = 15.0
-
             if self.timeToChangeMode <= 0:
                 if self.gameState == GameState.RUNNING:
                     self.gameState = GameState.RUNNING_CHAOS
                 else:
+                    if self.gameState == GameState.RESPAWNING:
+                        for actor in self.actors:
+                            actor.wakeUp()
                     self.gameState = GameState.RUNNING
 
-                    self.gameState = GameState.RUNNING
                 if self.log:
                     print(self.gameState)
                 self.timeToChangeMode = 15.0
@@ -114,7 +105,9 @@ class World:
             self.removeActor(player)
             for enemy in self.actors:
                 enemy.respawn(self)
+            self.respawning.respawn(self)
             self.gameState = GameState.RESPAWNING
+            self.timeToChangeMode = 3.0
 
     def hasEntityOfType(self, position: Vector2Int, entityType: type) -> bool:
         result = False
