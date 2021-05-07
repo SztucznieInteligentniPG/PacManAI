@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 import math
+import numpy as np
 from typing import TYPE_CHECKING
 
 from blockade import Blockade
@@ -13,8 +14,11 @@ from wall import Wall
 if TYPE_CHECKING:
     from actor import Actor
     from deserialize import Deserialize
+    from enemy import Enemy
     from entity import Entity
     from player import Player
+    from point import Point
+    from power_up import PowerUp
 
     Place = list[Entity]
     Row = list[Place]
@@ -187,3 +191,37 @@ class World:
                 updateTime = actorUpdateTime
 
         return updateTime
+
+    def generateTensor(self):
+        from enemy import Enemy
+        from player import Player
+        from point import Point
+        from power_up import PowerUp
+        tensor = np.array(np.zeros((1, 19, 19, 10)))
+        i = 0
+        for row in self.grid:
+            j = 0
+            for place in row:
+                for entity in place:
+                    if isinstance(entity, Wall):
+                        tensor[0][i][j][0] = 1
+                    if isinstance(entity, Blockade):
+                        tensor[0][i][j][1] = 1
+                    if isinstance(entity, Point):
+                        tensor[0][i][j][2] = 1
+                    if isinstance(entity, PowerUp):
+                        tensor[0][i][j][3] = 1
+                    if isinstance(entity, Player):
+                        tensor[0][i][j][4] = 1
+                    if isinstance(entity, Enemy):
+                        if entity.is_fearful:
+                            tensor[0][i][j][9] = 1
+                        else:
+                            tensor[0][i][j][5+entity.id] = 1
+                j += 1
+            i += 1
+        return tensor
+
+
+
+

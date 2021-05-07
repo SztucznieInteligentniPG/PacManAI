@@ -16,11 +16,14 @@ class Enemy(Actor):
     speed = 3.0
     spawn: Vector2Int = None
     is_fearful: bool
+    id: int
 
-    def __init__(self, controller, direction: Direction):
+    def __init__(self, controller, direction: Direction, id: int):
         super().__init__(controller)
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)
+        self.id = id
+        self.is_fearful = False
 
         if direction is Direction.LEFT:
             self.modelDirection = Direction.LEFT
