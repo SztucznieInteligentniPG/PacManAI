@@ -16,9 +16,7 @@ class AiController(Controller):
             self.model.set_weights(weights)
 
     def update(self, world: World):
-        data = tf.random.uniform(shape=(1, 19, 19, 10), maxval=1.0)
-
-        max_arg = tf.math.argmax(self.model(data)[0])
+        max_arg = tf.math.argmax(self.model(world.generateTensor())[0])
         direction_index = max_arg.numpy()
 
         self.direction = Direction(direction_index)

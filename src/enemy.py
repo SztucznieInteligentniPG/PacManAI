@@ -21,7 +21,7 @@ class Enemy(Actor):
     is_fearful: bool
     id: int
 
-    def __init__(self, controller, direction: Direction, id: int, , delay: float):
+    def __init__(self, controller, direction: Direction, id: int, delay: float):
         super().__init__(controller)
         self.direction = direction
         self.collisionBox = Vector2Float(1, 1)

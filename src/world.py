@@ -180,7 +180,6 @@ class World:
                     if isinstance(entity, Actor):
                         self.putActor(entity, Vector2Int(j, i))
                     elif isinstance(entity, Blockade):
-                        self.blockade = entity
                         self.putEntity(entity, Vector2Int(j, i))
                     elif entity is not None:
                         self.putEntity(entity, Vector2Int(j, i))
@@ -200,6 +199,7 @@ class World:
         from player import Player
         from point import Point
         from power_up import PowerUp
+        from wall import Wall
         tensor = np.zeros((1, 19, 19, 10))
         for x, column in enumerate(self.grid):
             for y, place in enumerate(column):

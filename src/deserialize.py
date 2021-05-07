@@ -17,11 +17,12 @@ if TYPE_CHECKING:
 class Deserialize:
     playerController: Controller
     enemyControllers: list[Controller]
-    cooldowns: list[float] = [3.0, 6.0, 9.0, 12.0]
+    cooldowns: list[float]
 
     def __init__(self, playerController: Controller, ghost1: Controller, ghost2: Controller, ghost3: Controller, ghost4: Controller):
         self.playerController = playerController
         self.enemyControllers = [ghost1, ghost2, ghost3, ghost4]
+        self.cooldowns = [3.0, 6.0, 9.0, 12.0]
 
     def deserialize(self, code: EntityDictionary):
         from player import Player
@@ -29,7 +30,6 @@ class Deserialize:
         from power_up import PowerUp
 
         entityCode = EntityDictionary(code)
-
 
         if entityCode == EntityDictionary.WALL:
             return Wall()
