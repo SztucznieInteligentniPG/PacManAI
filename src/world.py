@@ -215,7 +215,7 @@ class World:
                     if isinstance(entity, Player):
                         tensor[0][x][y][4] = 1
                     if isinstance(entity, Enemy):
-                        if entity.is_fearful:
+                        if entity.isFearful:
                             tensor[0][x][y][9] = 1
                         else:
                             tensor[0][x][y][5+entity.id] = 1
