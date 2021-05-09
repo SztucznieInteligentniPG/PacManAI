@@ -5,6 +5,7 @@ import time
 from ai_controller import AiController
 from deserialize import Deserialize
 from game_state import GameState
+import network_model
 from player_controller import PlayerController
 from random_controller import RandomController
 from renderer import Renderer
@@ -23,10 +24,13 @@ def main():
 
     renderer = Renderer(display)
 
+    model = network_model.create()
+    # model.load_weights('./training/datetime/best')
+
     playerController = PlayerController()
     deserialize = Deserialize(
             # playerController,
-            AiController(None),
+            AiController(model.get_weights()),
             RandomController(),
             RandomController(),
             RandomController(),

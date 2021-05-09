@@ -18,7 +18,7 @@ class Enemy(Actor):
     speed = 3.0
     spawnDelay: float
     cooldown: float
-    is_fearful: bool
+    isFearful: bool
     id: int
 
     def __init__(self, controller, direction: Direction, id: int, delay: float):
@@ -28,7 +28,7 @@ class Enemy(Actor):
         self.id = id
         self.spawnDelay = delay
         self.cooldown = delay
-        self.is_fearful = False
+        self.isFearful = False
 
         if direction is Direction.LEFT:
             self.modelDirection = Direction.LEFT
@@ -54,7 +54,7 @@ class Enemy(Actor):
     def update(self, world: World, deltaTime: float):
         from player import Player
 
-        self.is_fearful = world.gameState is GameState.PSYCHODELIC
+        self.isFearful = world.gameState is GameState.PSYCHODELIC
 
         if self.cooldown > 0:
             self.cooldown -= deltaTime
@@ -89,7 +89,7 @@ class Enemy(Actor):
                     distance = 0
 
             for entity in colliding:
-                if isinstance(entity, Player) and not self.is_fearful:
+                if isinstance(entity, Player) and not self.isFearful:
                     entity.die(world)
 
             destination = world.getPositionInDirection(self.worldPosition, self.direction)
@@ -128,7 +128,7 @@ class Enemy(Actor):
         self.cooldown = self.spawnDelay
 
     def model(self) -> Model:
-        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.is_fearful else Texture.ENEMY, self.position,
+        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.isFearful else Texture.ENEMY, self.position,
                      Vector2Float(0.5, 0.5))
 
     def maximumSafeUpdateTime(self) -> float:
