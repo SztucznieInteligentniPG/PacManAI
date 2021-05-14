@@ -26,20 +26,23 @@ def main():
 
     model = network_model.create()
     # model.load_weights('./training/datetime/best')
+    seed = 1
 
     playerController = PlayerController()
     deserialize = Deserialize(
             # playerController,
             AiController(model.get_weights()),
-            RandomController(),
-            RandomController(),
-            RandomController(),
-            RandomController(),
+            RandomController(seed),
+            RandomController(seed + 1),
+            RandomController(seed + 2),
+            RandomController(seed + 3),
         )
     world = World(Vector2Int(19, 19), deserialize, True)
     world.loadGrid()
 
-    safeDeltaTime = world.maximumSafeUpdateTime()
+    realTimeMultiplier = 4
+    safeDeltaTime = 1/15
+    deltaTime = 0
 
     keys = []
     while True:
@@ -63,27 +66,30 @@ def main():
             elif event.type == pygame.KEYUP:
                 keys.remove(event.key)
 
-        deltaTime = clock.tick(60) / 1000.0
-        deltaTime = safeDeltaTime if deltaTime > safeDeltaTime else deltaTime
+        deltaTime += clock.tick(60) / 1000.0 * realTimeMultiplier
+        # deltaTime = safeDeltaTime if deltaTime > safeDeltaTime else deltaTime
 
-        playerController.updateKeys(keys)
-        world.update(deltaTime)
+        if deltaTime >= safeDeltaTime:
+            playerController.updateKeys(keys)
+            world.update(safeDeltaTime)
+            deltaTime -= safeDeltaTime
 
         renderer.render(world)
 
 
-def trainPlayer(weights) -> int:
+def trainPlayer(weights: list, seed: int) -> int:
+
     deserialize = Deserialize(
             AiController(weights),
-            RandomController(),
-            RandomController(),
-            RandomController(),
-            RandomController(),
+            RandomController(seed),
+            RandomController(seed + 1),
+            RandomController(seed + 2),
+            RandomController(seed + 3),
         )
     world = World(Vector2Int(19, 19), deserialize)
     world.loadGrid()
 
-    deltaTime = world.maximumSafeUpdateTime()
+    deltaTime = 1/15
 
     while True:
         if world.gameState == GameState.WON or world.gameState == GameState.LOST:

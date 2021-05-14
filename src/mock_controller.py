@@ -9,5 +9,5 @@ class MockController(Controller):
     def __init__(self, direction: Direction):
         self.direction = direction
 
-    def update(self, world: World):
+    def update(self, world: World, deltaTime: float):
         pass

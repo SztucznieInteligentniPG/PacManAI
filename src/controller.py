@@ -8,5 +8,5 @@ class Controller(ABC):
     direction: Direction = None
 
     @abstractmethod
-    def update(self, world: World):
+    def update(self, world: World, deltaTime: float):
         pass

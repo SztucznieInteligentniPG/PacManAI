@@ -59,7 +59,7 @@ class Enemy(Actor):
         if self.cooldown > 0:
             self.cooldown -= deltaTime
         else:
-            self.controller.update(world)
+            self.controller.update(world, deltaTime)
 
             distance = self.speed * deltaTime
 
