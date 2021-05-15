@@ -1,6 +1,8 @@
 from datetime import datetime
+from itertools import repeat
 import multiprocessing
 import os
+import random
 import time
 
 
@@ -14,12 +16,12 @@ def runTraining():
     populationSize = 100
     generations = 1000
     elite = 10
-    mutationRate = 1 / 220000
+    mutationRate = 1 / 110000
 
     cpus = multiprocessing.cpu_count()
     print("Processors detected: ", cpus)
 
-    trainingStart = datetime.now().strftime("%Y-%m-%d_%H;%M;%S")
+    trainingStart = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
 
     print('Generating population...')
     start = time.time()
@@ -34,13 +36,17 @@ def runTraining():
 
         start = time.time()
 
+        seed = random.randint(0, 9223372036854775807)
         with multiprocessing.Pool(cpus) as pool:
-            scores = pool.map(app.trainPlayer, population)
+            # scores = pool.map(app.trainPlayer, population)
+            scores = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
 
         print(
             'Generation', generation + 1, 'over;',
+            'Population count:', scores.__len__(), ';',
             'Simulation time:', time.time() - start, 's;',
-            'Scores (', scores.__len__(), '):\n',
+            'Enemy seed:', seed, ';',
+            'Scores:\n',
             scores,
         )
 

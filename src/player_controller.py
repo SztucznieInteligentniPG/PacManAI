@@ -8,7 +8,7 @@ from world import World
 class PlayerController(Controller):
     direction: Direction = None
 
-    def update(self, world: World):
+    def update(self, world: World, deltaTime: float):
         pass
 
     def updateKeys(self, keys: list):

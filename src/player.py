@@ -41,7 +41,7 @@ class Player(Actor):
     def update(self, world: World, deltaTime: float):
 
         if not self.isSleeping:
-            self.controller.update(world)
+            self.controller.update(world, deltaTime)
 
             # Zawracanie nie będac w środku grida może wywołać zatrzymanie się postaci
             # i inne dziwne rzeczy więc wyączam puki co tą możliwość
