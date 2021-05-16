@@ -18,8 +18,8 @@ class Renderer:
     def __init__(self, display: pygame.display):
         self.display = display
         self.font = pygame.font.Font(pygame.font.get_default_font(), 20)
-        self.font_title = pygame.font.Font(pygame.font.get_default_font(), 40)
-        self.heart_texture = pygame.image.load('img/heart.png')
+        self.fontTitle = pygame.font.Font(pygame.font.get_default_font(), 40)
+        self.heartTexture = pygame.image.load('img/heart.png')
 
     def renderModel(self, model: Model):
         x = model.position.x
@@ -44,13 +44,13 @@ class Renderer:
         self.display.blit(texture, position)
 
     def renderInfo(self, world:World):
-        title = self.font_title.render('PACMAN', False, (252, 186, 3))
+        title = self.fontTitle.render('PACMAN', False, (252, 186, 3))
         self.display.blit(title, (240, 20))
         startX = 40
         startY = 20
         for i in range(world.lives):
             position = (startX + 40 * i, startY)
-            self.display.blit(self.heart_texture, position)
+            self.display.blit(self.heartTexture, position)
         points = self.font.render('Punkty:  ' + str(int(world.score)), False, (255, 255, 255))
         self.display.blit(points, (500, 30))
 
@@ -60,10 +60,10 @@ class Renderer:
     def render(self, world: World):
         self.display.fill(BACKGROUND)
         if world.gameState is GameState.WON:
-            end = self.font_title.render('YOU WON', False, (252, 186, 3))
+            end = self.fontTitle.render('YOU WON', False, (252, 186, 3))
             self.display.blit(end, (240, 350))
         elif world.gameState is GameState.LOST:
-            end = self.font_title.render('YOU LOST', False, (252, 186, 3))
+            end = self.fontTitle.render('YOU LOST', False, (252, 186, 3))
             self.display.blit(end, (240, 350))
         else:
             self.renderInfo(world)
