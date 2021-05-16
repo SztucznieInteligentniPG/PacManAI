@@ -11,9 +11,9 @@ BACKGROUND = (0, 0, 0)
 
 class Renderer:
     display: pygame.display
-    font_title: pygame.font
+    fontTitle: pygame.font
     font: pygame.font
-    heart_texture: pygame.image
+    heartTexture: pygame.image
 
     def __init__(self, display: pygame.display):
         self.display = display
@@ -51,8 +51,8 @@ class Renderer:
         for i in range(world.lives):
             position = (startX + 40 * i, startY)
             self.display.blit(self.heart_texture, position)
-        punkty = self.font.render('Punkty:  ' + str(int(world.score)), False, (255, 255, 255))
-        self.display.blit(punkty, (500, 30))
+        points = self.font.render('Punkty:  ' + str(int(world.score)), False, (255, 255, 255))
+        self.display.blit(points, (500, 30))
 
 
 
