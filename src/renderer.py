@@ -2,6 +2,7 @@ import pygame
 
 from direction import Direction
 from entity import Entity
+from game_state import GameState
 from model import Model
 from world import World
 
@@ -43,7 +44,6 @@ class Renderer:
         self.display.blit(texture, position)
 
     def renderInfo(self, world:World):
-        self.display.fill(BACKGROUND)
         title = self.font_title.render('PACMAN', False, (252, 186, 3))
         self.display.blit(title, (240, 20))
         startX = 40
@@ -54,12 +54,23 @@ class Renderer:
         punkty = self.font.render('Punkty:  ' + str(int(world.score)), False, (255, 255, 255))
         self.display.blit(punkty, (500, 30))
 
+
+
+
     def render(self, world: World):
-        self.renderInfo(world)
-        for row in world.grid:
-            for list in row:
-                for entity in list:
-                    if isinstance(entity, Entity):
-                        model = entity.model()
-                        self.renderModel(model)
+        self.display.fill(BACKGROUND)
+        if world.gameState is GameState.WON:
+            end = self.font_title.render('YOU WON', False, (252, 186, 3))
+            self.display.blit(end, (240, 350))
+        elif world.gameState is GameState.LOST:
+            end = self.font_title.render('YOU LOST', False, (252, 186, 3))
+            self.display.blit(end, (240, 350))
+        else:
+            self.renderInfo(world)
+            for row in world.grid:
+                for list in row:
+                    for entity in list:
+                        if isinstance(entity, Entity):
+                            model = entity.model()
+                            self.renderModel(model)
         pygame.display.update()
