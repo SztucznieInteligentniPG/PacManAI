@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from blockade import Blockade
 from direction import Direction
 from game_state import GameState
+from reward import Reward
 from vector2 import Vector2Int
 
 if TYPE_CHECKING:
@@ -95,13 +96,14 @@ class World:
     def getEntities(self, position: Vector2Int) -> list[Entity]:
         return self.grid[position.x][position.y]
 
-    def addScore(self, score: int):
-        self.score += score
+    def addScore(self, score: Reward, multiplier=1.0):
+        self.score += score.value*multiplier
         if self.log:
             print('Wynik:', self.score)
 
     def getKilled(self, player: Player):
         self.lives -= 1
+        self.addScore(Reward.DEATH)
         if self.lives <= 0:
             self.gameState = GameState.LOST
         else:
@@ -130,6 +132,7 @@ class World:
             self.pointsRemaining -= 1
             if self.pointsRemaining == 0:
                 self.gameState = GameState.WON
+                self.addScore(Reward.TIME_REMAINING, (self.timeLimit - self.time))
         if isinstance(entity, PowerUp):
             self.gameState = GameState.PSYCHODELIC
             if self.log:

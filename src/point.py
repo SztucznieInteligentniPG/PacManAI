@@ -2,6 +2,7 @@ from direction import Direction
 from entity import Entity
 from entity_dictionary import EntityDictionary
 from model import Model
+from reward import Reward
 from texture import Texture
 from vector2 import Vector2Float
 from world import World
@@ -25,4 +26,4 @@ class Point(Entity):
 
     def collect(self, world: World):
         self.destroy(world)
-        world.addScore(1)
+        world.addScore(Reward.POINT)
