@@ -12,12 +12,13 @@ from renderer import Renderer
 from vector2 import Vector2Int
 from world import World
 
-HEIGHT = 800
-WIDTH = 800
+HEIGHT = 700
+WIDTH = 648
 
 
 def main():
     pygame.init()
+    pygame.font.init()
     pygame.display.set_caption("Pacman")
     display = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
