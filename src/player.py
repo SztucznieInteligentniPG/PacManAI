@@ -7,6 +7,7 @@ from game_state import GameState
 from model import Model
 from point import Point
 from power_up import PowerUp
+from reward import Reward
 from texture import Texture
 from vector2 import Vector2Int, Vector2Float
 from wall import Wall
@@ -85,6 +86,7 @@ class Player(Actor):
                 if isinstance(entity, Point) or isinstance(entity, PowerUp):
                     entity.collect(world)
                 if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
+                    world.addScore(Reward.KILLED_GHOST)
                     entity.die(world)
 
             destination = world.getPositionInDirection(self.worldPosition, self.direction)
