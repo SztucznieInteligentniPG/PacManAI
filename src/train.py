@@ -15,7 +15,7 @@ def runTraining():
     import app
 
     populationSize = 100
-    generations = 10
+    generations = 1000
     elite = 10
     mutationRate = 1 / 110000
     cpus = multiprocessing.cpu_count()
