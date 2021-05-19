@@ -9,6 +9,7 @@ import network_model
 from player_controller import PlayerController
 from random_controller import RandomController
 from renderer import Renderer
+from statistic import Statistic
 from vector2 import Vector2Int
 from world import World
 
@@ -78,7 +79,7 @@ def main():
         renderer.render(world)
 
 
-def trainPlayer(weights: list, seed: int) -> int:
+def trainPlayer(weights: list, seed: int) -> (int, Statistic):
 
     deserialize = Deserialize(
             AiController(weights),
@@ -87,7 +88,7 @@ def trainPlayer(weights: list, seed: int) -> int:
             RandomController(seed + 2),
             RandomController(seed + 3),
         )
-    world = World(Vector2Int(19, 19), deserialize)
+    world = World(Vector2Int(19, 19), deserialize, train=True,)
     world.loadGrid()
 
     deltaTime = 1/15
@@ -98,7 +99,7 @@ def trainPlayer(weights: list, seed: int) -> int:
 
         world.update(deltaTime)
 
-    return world.score
+    return world.score, world.statistic
 
 
 if __name__ == '__main__':

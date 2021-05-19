@@ -8,20 +8,21 @@ import time
 
 import genetic_algorithm as genetic
 import network_model
+from tracker import Tracker
 
 
 def runTraining():
     import app
 
     populationSize = 100
-    generations = 1000
+    generations = 10
     elite = 10
     mutationRate = 1 / 110000
-
     cpus = multiprocessing.cpu_count()
     print("Processors detected: ", cpus)
 
     trainingStart = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
+    tracker = Tracker('./statistics/' + trainingStart)
 
     print('Generating population...')
     start = time.time()
@@ -33,13 +34,13 @@ def runTraining():
 
     for generation in range(generations):
         print('Generation', generation + 1, 'start')
-
         start = time.time()
 
         seed = random.randint(0, 9223372036854775807)
         with multiprocessing.Pool(cpus) as pool:
             # scores = pool.map(app.trainPlayer, population)
-            scores = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
+            scores, stats = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
+        tracker.addGeneration(stats)
 
         print(
             'Generation', generation + 1, 'over;',
@@ -64,6 +65,7 @@ def runTraining():
 
         population = genetic.newGeneration(population, scores, elite, mutationRate)
 
+    tracker.saveData()
 
 if __name__ == '__main__':
     # Wyłączenie wkurzających wiadomości
