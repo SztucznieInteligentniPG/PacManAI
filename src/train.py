@@ -39,9 +39,10 @@ def runTraining():
         seed = random.randint(0, 9223372036854775807)
         with multiprocessing.Pool(cpus) as pool:
             # scores = pool.map(app.trainPlayer, population)
-            scores, stats = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
+            result = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
+        scores = [item[0] for item in result]
+        stats = [item[1] for item in result]
         tracker.addGeneration(stats)
-
         print(
             'Generation', generation + 1, 'over;',
             'Population count:', scores.__len__(), ';',

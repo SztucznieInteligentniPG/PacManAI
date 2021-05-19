@@ -79,7 +79,7 @@ def main():
         renderer.render(world)
 
 
-def trainPlayer(weights: list, seed: int) -> (int, Statistic):
+def trainPlayer(weights: list, seed: int) -> ([int, Statistic]):
 
     deserialize = Deserialize(
             AiController(weights),
@@ -99,7 +99,7 @@ def trainPlayer(weights: list, seed: int) -> (int, Statistic):
 
         world.update(deltaTime)
 
-    return world.score, world.statistic
+    return [world.score, world.statistic]
 
 
 if __name__ == '__main__':

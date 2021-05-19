@@ -17,9 +17,11 @@ class Tracker:
 
     def addGeneration(self, statisticList: list[Statistic]):
         name = 'gen'+str(self.genCounter)
-        self.data[name] = []
+
+        self.data[name] = {}
         for i in range(statisticList.__len__()):
-            self.data[name]['ind'+str(i)] = Statistic(statisticList[i]).data
+            stats = statisticList[i]
+            self.data[name]['ind'+str(i)] = stats.data
         self.genCounter += 1
 
 
