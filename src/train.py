@@ -41,8 +41,8 @@ def runTraining():
             # scores = pool.map(app.trainPlayer, population)
             result = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
         scores = [item[0] for item in result]
-        stats = [item[1] for item in result]
-        tracker.addGeneration(stats)
+        statistics = [item[1] for item in result]
+        tracker.addGeneration(statistics)
         print(
             'Generation', generation + 1, 'over;',
             'Population count:', scores.__len__(), ';',
