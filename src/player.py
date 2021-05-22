@@ -18,6 +18,7 @@ class Player(Actor):
     direction: Direction
     speed = 3.0
     isSleeping: bool = False
+    stateTimer: float = 0.0
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
@@ -40,34 +41,31 @@ class Player(Actor):
             return EntityDictionary.PLAYER_DOWN.value
 
     def update(self, world: World, deltaTime: float):
+        self.stateTimer += deltaTime
 
         if not self.isSleeping:
-            self.controller.update(world, deltaTime)
-
-            # Zawracanie nie będac w środku grida może wywołać zatrzymanie się postaci
-            # i inne dziwne rzeczy więc wyączam puki co tą możliwość
-
-            # if self.direction is Direction.LEFT and self.controller.direction is Direction.RIGHT:
-            #     self.direction = Direction.RIGHT
-            # elif self.direction is Direction.RIGHT and self.controller.direction is Direction.LEFT:
-            #     self.direction = Direction.LEFT
-            # elif self.direction is Direction.UP and self.controller.direction is Direction.DOWN:
-            #     self.direction = Direction.DOWN
-            # elif self.direction is Direction.DOWN and self.controller.direction is Direction.UP:
-            #     self.direction = Direction.UP
-
             distance = self.speed * deltaTime
-
-            colliding = self.checkCollidingEntities(world)
-
             destination = world.getPositionInDirection(self.worldPosition, self.direction)
-            if self.controller.direction is not None and (
+
+            if self.stateTimer >= self.maximumSafeUpdateTime():
+                colliding = self.checkCollidingEntities(world)
+
+                for entity in colliding:
+                    if isinstance(entity, Point) or isinstance(entity, PowerUp):
+                        entity.collect(world)
+                    if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
+                        world.addScore(Reward.KILLED_GHOST)
+                        entity.die(world)
+
+                self.controller.update(world)
+
+                if self.controller.direction is not None and (
                     destination == self.worldPosition or
                     not self.isWalkable(world, destination)
-            ):
-                destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                if self.isWalkable(world, destination):
-                    self.direction = self.controller.direction
+                ):
+                    destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                    if self.isWalkable(world, destination):
+                        self.direction = self.controller.direction
 
             if destination != self.worldPosition and self.isWalkable(world, destination):
                 distanceToDestination: float = self.getDistanceTo(destination)
@@ -78,21 +76,14 @@ class Player(Actor):
                         destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
                         if self.isWalkable(world, destination):
                             self.direction = self.controller.direction
-                else:
-                    self.moveInDirection(self.direction, distance)
-                    distance = 0
-
-            for entity in colliding:
-                if isinstance(entity, Point) or isinstance(entity, PowerUp):
-                    entity.collect(world)
-                if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
-                    world.addScore(Reward.KILLED_GHOST)
-                    entity.die(world)
 
             destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
             if destination != self.worldPosition and self.isWalkable(world, destination):
                 self.moveInDirection(self.direction, distance)
+
+        if self.stateTimer >= self.maximumSafeUpdateTime():
+            self.stateTimer -= self.maximumSafeUpdateTime()
 
     def isWalkable(self, world: World, position: Vector2Int) -> bool:
         if world.hasEntityOfType(position, Blockade) or world.hasEntityOfType(position, Wall):
@@ -114,4 +105,4 @@ class Player(Actor):
         return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))
 
     def maximumSafeUpdateTime(self) -> float:
-        return 1.0 / self.speed
+        return 1.0 / self.speed / 2
