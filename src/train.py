@@ -40,8 +40,8 @@ def runTraining():
         with multiprocessing.Pool(cpus) as pool:
             # scores = pool.map(app.trainPlayer, population)
             result = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
-        scores = [item[0] for item in result]
-        statistics = [item[1] for item in result]
+        scores = [item.data['total'] for item in result]
+        statistics = result
         tracker.addGeneration(statistics)
         print(
             'Generation', generation + 1, 'over;',
@@ -66,7 +66,7 @@ def runTraining():
 
         population = genetic.newGeneration(population, scores, elite, mutationRate)
 
-    tracker.saveData()
+        tracker.saveData()
 
 if __name__ == '__main__':
     # Wyłączenie wkurzających wiadomości

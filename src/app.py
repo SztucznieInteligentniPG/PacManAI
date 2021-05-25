@@ -99,7 +99,7 @@ def trainPlayer(weights: list, seed: int) -> ([int, Statistic]):
 
         world.update(deltaTime)
 
-    return [world.score, world.statistic]
+    return world.statistic
 
 
 if __name__ == '__main__':
