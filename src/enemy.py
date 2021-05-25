@@ -21,7 +21,6 @@ class Enemy(Actor):
     isFearful: bool
     id: int
     tickTimer: int = 0
-    modelPosition: int = 0
 
     def __init__(self, controller, direction: Direction, id: int, delay: float):
         super().__init__(controller)
