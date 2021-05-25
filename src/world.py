@@ -54,14 +54,12 @@ class World:
         self.deserialize = deserialize
         self.log = log
 
-    def update(self, deltaTime: float):
+    def update(self, tickRate: int):
         if self.gameState is not GameState.LOST and self.gameState is not GameState.WON:
-            for actor in self.actors:
-                actor.update(self, deltaTime)
-            self.time += deltaTime
+            self.time += 1 / tickRate
             if self.time >= self.timeLimit:
                 self.gameState = GameState.LOST
-            self.timeToChangeMode -= deltaTime
+            self.timeToChangeMode -= 1 / tickRate
 
             if self.timeToChangeMode <= 0:
                 if self.gameState == GameState.RUNNING:
@@ -75,6 +73,9 @@ class World:
                 if self.log:
                     print(self.gameState)
                 self.timeToChangeMode = 15.0
+
+            for actor in self.actors:
+                actor.update(self, tickRate)
 
     def putActor(self, actor: Actor, position: Vector2Int):
         self.actors.append(actor)
@@ -97,7 +98,7 @@ class World:
         return self.grid[position.x][position.y]
 
     def addScore(self, score: Reward, multiplier=1.0):
-        self.score += score.value*multiplier
+        self.score += score.value * multiplier
         if self.log:
             print('Wynik:', self.score)
 
@@ -187,15 +188,13 @@ class World:
                     elif entity is not None:
                         self.putEntity(entity, Vector2Int(j, i))
 
-    def maximumSafeUpdateTime(self) -> float:
-        updateTime = math.inf
+    def tickRate(self) -> int:
+        tickRate: int = 1
 
         for actor in self.actors:
-            actorUpdateTime = actor.maximumSafeUpdateTime()
-            if actorUpdateTime < updateTime:
-                updateTime = actorUpdateTime
+            tickRate = int(tickRate * actor.tickRate() / math.gcd(tickRate, actor.tickRate()))
 
-        return updateTime
+        return tickRate
 
     def generateTensor(self):
         from enemy import Enemy
@@ -221,10 +220,6 @@ class World:
                         if entity.isFearful:
                             tensor[0][x][y][9] = 1
                         else:
-                            tensor[0][x][y][5+entity.id] = 1
-               
+                            tensor[0][x][y][5 + entity.id] = 1
+
         return tensor
-
-
-
-

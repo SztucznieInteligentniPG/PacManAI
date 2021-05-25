@@ -1,3 +1,4 @@
+import math
 import pygame
 import sys
 import time
@@ -26,23 +27,24 @@ def main():
     renderer = Renderer(display)
 
     model = network_model.create()
-    # model.load_weights('./training/datetime/best')
+    model.load_weights('./training/best')
     seed = 1
 
     playerController = PlayerController()
     deserialize = Deserialize(
             # playerController,
             AiController(model.get_weights()),
-            RandomController(2, seed),
-            RandomController(2, seed + 1),
-            RandomController(2, seed + 2),
-            RandomController(2, seed + 3),
+            RandomController(1, seed),
+            RandomController(1, seed + 1),
+            RandomController(1, seed + 2),
+            RandomController(1, seed + 3),
         )
     world = World(Vector2Int(19, 19), deserialize, True)
     world.loadGrid()
 
     realTimeMultiplier = 1
-    safeDeltaTime = world.maximumSafeUpdateTime()
+    baseTickRate = world.tickRate()
+    tickRate = int(math.ceil(60 / realTimeMultiplier / baseTickRate)) * baseTickRate
 
     keys = []
     while True:
@@ -66,11 +68,10 @@ def main():
             elif event.type == pygame.KEYUP:
                 keys.remove(event.key)
 
-        deltaTime = clock.tick(60) / 1000.0 * realTimeMultiplier
-        deltaTime = safeDeltaTime if deltaTime > safeDeltaTime else deltaTime
+        clock.tick(tickRate * realTimeMultiplier)
 
         playerController.updateKeys(keys)
-        world.update(deltaTime)
+        world.update(tickRate)
 
         renderer.render(world)
 
@@ -86,13 +87,14 @@ def trainPlayer(weights: list, seed: int) -> int:
         )
     world = World(Vector2Int(19, 19), deserialize)
     world.loadGrid()
-    deltaTime = world.maximumSafeUpdateTime()
+
+    tickRate = world.tickRate()
 
     while True:
         if world.gameState == GameState.WON or world.gameState == GameState.LOST:
             break
 
-        world.update(deltaTime)
+        world.update(tickRate)
 
     return world.score
 
