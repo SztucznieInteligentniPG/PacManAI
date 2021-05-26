@@ -15,7 +15,7 @@ class AiController(Controller):
         if weights is not None:
             self.model.set_weights(weights)
 
-    def update(self, world: World, deltaTime: float):
+    def update(self, world: World):
         max_arg = tf.math.argmax(self.model(world.generateTensor())[0])
         direction_index = max_arg.numpy()
 

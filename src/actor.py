@@ -1,6 +1,5 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-import math
 from typing import TYPE_CHECKING
 
 from controller import Controller
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
 
 class Actor(Entity, ABC):
     controller: Controller
+    modelPosition: Vector2Float = None
     position: Vector2Float = None
     spawn: Vector2Int = None
 
@@ -28,6 +28,7 @@ class Actor(Entity, ABC):
     def setPosition(self, worldPosition: Vector2Int):
         self.worldPosition = worldPosition
         self.position = Vector2Float(worldPosition.x, worldPosition.y)
+        self.modelPosition = Vector2Float(worldPosition.x, worldPosition.y)
 
     def checkCollision(self, other: Entity):
         selfLeft = self.position.x - self.collisionBox.x / 2
@@ -82,15 +83,27 @@ class Actor(Entity, ABC):
         elif direction is Direction.LEFT:
             self.position.x -= distance
 
+        self.modelPosition = Vector2Float(self.position.x, self.position.y)
+
+    def moveModelInDirection(self, direction: Direction, distance: float):
+        if direction is Direction.UP:
+            self.modelPosition.y -= distance
+        elif direction is Direction.DOWN:
+            self.modelPosition.y += distance
+        elif direction is Direction.RIGHT:
+            self.modelPosition.x += distance
+        elif direction is Direction.LEFT:
+            self.modelPosition.x -= distance
+
 
     def isWalkable(self, world: World, position: Vector2Int) -> bool:
         return True
 
-    def maximumSafeUpdateTime(self) -> float:
-        return math.inf
+    def tickRate(self) -> int:
+        return 1
 
     @abstractmethod
-    def update(self, world: World, deltaTime: float):
+    def update(self, world: World, tickRate: int):
         pass
 
     @abstractmethod

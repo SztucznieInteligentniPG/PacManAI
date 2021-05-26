@@ -16,8 +16,9 @@ from world import World
 
 class Player(Actor):
     direction: Direction
-    speed = 3.0
+    speed: int = 3
     isSleeping: bool = False
+    tickTimer: int = 0
 
     def __init__(self, controller, direction: Direction):
         super().__init__(controller)
@@ -39,60 +40,53 @@ class Player(Actor):
         if self.direction == Direction.DOWN:
             return EntityDictionary.PLAYER_DOWN.value
 
-    def update(self, world: World, deltaTime: float):
+    def update(self, world: World, tickRate: int):
+        self.tickTimer += 1
 
-        if not self.isSleeping:
-            self.controller.update(world, deltaTime)
+        destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-            # Zawracanie nie będac w środku grida może wywołać zatrzymanie się postaci
-            # i inne dziwne rzeczy więc wyączam puki co tą możliwość
+        if self.tickTimer >= tickRate / self.tickRate():
+            if not self.isSleeping:
+                colliding = self.checkCollidingEntities(world)
 
-            # if self.direction is Direction.LEFT and self.controller.direction is Direction.RIGHT:
-            #     self.direction = Direction.RIGHT
-            # elif self.direction is Direction.RIGHT and self.controller.direction is Direction.LEFT:
-            #     self.direction = Direction.LEFT
-            # elif self.direction is Direction.UP and self.controller.direction is Direction.DOWN:
-            #     self.direction = Direction.DOWN
-            # elif self.direction is Direction.DOWN and self.controller.direction is Direction.UP:
-            #     self.direction = Direction.UP
+                for entity in colliding:
+                    if isinstance(entity, Point) or isinstance(entity, PowerUp):
+                        entity.collect(world)
+                    if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
+                        world.addScore(Reward.KILLED_GHOST)
+                        entity.die(world)
 
-            distance = self.speed * deltaTime
+                distance = self.speed / self.tickRate()
 
-            colliding = self.checkCollidingEntities(world)
+                if destination != self.worldPosition and self.isWalkable(world, destination):
+                    distanceToDestination: float = self.getDistanceTo(destination)
+                    if distance >= distanceToDestination:
+                        distance -= distanceToDestination
+                        world.moveEntity(self, destination)
+                        if self.controller.direction is not None:
+                            destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                            if self.isWalkable(world, destination):
+                                self.direction = self.controller.direction
 
-            destination = world.getPositionInDirection(self.worldPosition, self.direction)
-            if self.controller.direction is not None and (
+                destination = world.getPositionInDirection(self.worldPosition, self.direction)
+
+                if destination != self.worldPosition and self.isWalkable(world, destination):
+                    self.moveInDirection(self.direction, distance)
+
+                self.controller.update(world)
+
+                if self.controller.direction is not None and (
                     destination == self.worldPosition or
                     not self.isWalkable(world, destination)
-            ):
-                destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                if self.isWalkable(world, destination):
-                    self.direction = self.controller.direction
+                ):
+                    destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                    if self.isWalkable(world, destination):
+                        self.direction = self.controller.direction
 
-            if destination != self.worldPosition and self.isWalkable(world, destination):
-                distanceToDestination: float = self.getDistanceTo(destination)
-                if distance >= distanceToDestination:
-                    distance -= distanceToDestination
-                    world.moveEntity(self, destination)
-                    if self.controller.direction is not None:
-                        destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                        if self.isWalkable(world, destination):
-                            self.direction = self.controller.direction
-                else:
-                    self.moveInDirection(self.direction, distance)
-                    distance = 0
-
-            for entity in colliding:
-                if isinstance(entity, Point) or isinstance(entity, PowerUp):
-                    entity.collect(world)
-                if isinstance(entity, Enemy) and world.gameState is GameState.PSYCHODELIC:
-                    world.addScore(Reward.KILLED_GHOST)
-                    entity.die(world)
-
-            destination = world.getPositionInDirection(self.worldPosition, self.direction)
-
-            if destination != self.worldPosition and self.isWalkable(world, destination):
-                self.moveInDirection(self.direction, distance)
+            self.tickTimer = 0
+        else:
+            if not self.isSleeping and destination != self.worldPosition and self.isWalkable(world, destination):
+                self.moveModelInDirection(self.direction, self.speed / tickRate)
 
     def isWalkable(self, world: World, position: Vector2Int) -> bool:
         if world.hasEntityOfType(position, Blockade) or world.hasEntityOfType(position, Wall):
@@ -111,7 +105,7 @@ class Player(Actor):
         self.isSleeping = False
 
     def model(self) -> Model:
-        return Model(self.direction, Texture.PACMAN_0, self.position, Vector2Float(0.5, 0.5))
+        return Model(self.direction, Texture.PACMAN_0, self.modelPosition, Vector2Float(0.5, 0.5))
 
-    def maximumSafeUpdateTime(self) -> float:
-        return 1.0 / self.speed
+    def tickRate(self) -> int:
+        return self.speed * 2

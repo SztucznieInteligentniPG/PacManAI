@@ -15,11 +15,12 @@ from world import World
 class Enemy(Actor):
     direction: Direction
     modelDirection: Direction
-    speed = 3.0
+    speed: int = 3
     spawnDelay: float
     cooldown: float
     isFearful: bool
     id: int
+    tickTimer: int = 0
 
     def __init__(self, controller, direction: Direction, id: int, delay: float):
         super().__init__(controller)
@@ -51,54 +52,59 @@ class Enemy(Actor):
         if self.direction == Direction.DOWN:
             return EntityDictionary.ENEMY_DOWN.value
 
-    def update(self, world: World, deltaTime: float):
+    def update(self, world: World, tickRate: int):
         from player import Player
 
+        self.tickTimer += 1
         self.isFearful = world.gameState is GameState.PSYCHODELIC
 
-        if self.cooldown > 0:
-            self.cooldown -= deltaTime
-        else:
-            self.controller.update(world, deltaTime)
+        destination = world.getPositionInDirection(self.worldPosition, self.direction)
 
-            distance = self.speed * deltaTime
+        if self.tickTimer >= tickRate / self.tickRate():
+            if self.cooldown > 0:
+                self.cooldown -= 1 / self.tickRate()
+            else:
+                colliding = self.checkCollidingEntities(world)
 
-            colliding = self.checkCollidingEntities(world)
+                for entity in colliding:
+                    if isinstance(entity, Player) and not self.isFearful:
+                        entity.die(world)
 
-            destination = world.getPositionInDirection(self.worldPosition, self.direction)
-            if self.controller.direction is not None and (
-                    destination == self.worldPosition or
-                    not self.isWalkable(world, destination)
-            ):
-                destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                if self.isWalkable(world, destination):
-                    self.direction = self.controller.direction
+                distance = self.speed / self.tickRate()
 
-            if destination != self.worldPosition and self.isWalkable(world, destination):
-                distanceToDestination: float = self.getDistanceTo(destination)
-                if distance >= distanceToDestination:
-                    distance -= distanceToDestination
-                    world.moveEntity(self, destination)
-                    if self.controller.direction is not None and not self.isOppositeDirection(
-                            self.controller.direction):
-                        destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
-                        if self.isWalkable(world, destination):
-                            self.direction = self.controller.direction
-                else:
+                if destination != self.worldPosition and self.isWalkable(world, destination):
+                    distanceToDestination: float = self.getDistanceTo(destination)
+                    if distance >= distanceToDestination:
+                        distance -= distanceToDestination
+                        world.moveEntity(self, destination)
+                        if self.controller.direction is not None and not self.isOppositeDirection(
+                                self.controller.direction):
+                            destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                            if self.isWalkable(world, destination):
+                                self.direction = self.controller.direction
+
+                destination = world.getPositionInDirection(self.worldPosition, self.direction)
+
+                if destination != self.worldPosition and self.isWalkable(world, destination):
                     self.moveInDirection(self.direction, distance)
-                    distance = 0
 
-            for entity in colliding:
-                if isinstance(entity, Player) and not self.isFearful:
-                    entity.die(world)
+                if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
+                    self.modelDirection = self.direction
 
-            destination = world.getPositionInDirection(self.worldPosition, self.direction)
+                self.controller.update(world)
 
-            if destination != self.worldPosition and self.isWalkable(world, destination):
-                self.moveInDirection(self.direction, distance)
+                if self.controller.direction is not None and (
+                        destination == self.worldPosition or
+                        not self.isWalkable(world, destination)
+                ):
+                    destination = world.getPositionInDirection(self.worldPosition, self.controller.direction)
+                    if self.isWalkable(world, destination):
+                        self.direction = self.controller.direction
 
-            if self.direction is not Direction.UP and self.direction is not Direction.DOWN:
-                self.modelDirection = self.direction
+            self.tickTimer = 0
+        else:
+            if self.cooldown <= 0 and destination != self.worldPosition and self.isWalkable(world, destination):
+                self.moveModelInDirection(self.direction, self.speed / tickRate)
 
     def isOppositeDirection(self, direction: Direction) -> bool:
         if self.direction is Direction.UP and direction is Direction.DOWN or \
@@ -128,8 +134,8 @@ class Enemy(Actor):
         self.cooldown = self.spawnDelay
 
     def model(self) -> Model:
-        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.isFearful else Texture.ENEMY, self.position,
+        return Model(self.modelDirection, Texture.ENEMY_FEARFUL if self.isFearful else Texture.ENEMY, self.modelPosition,
                      Vector2Float(0.5, 0.5))
 
-    def maximumSafeUpdateTime(self) -> float:
-        return 1.0 / self.speed
+    def tickRate(self) -> int:
+        return self.speed * 2
