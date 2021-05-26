@@ -9,6 +9,7 @@ from direction import Direction
 from game_state import GameState
 from reward import Reward
 from vector2 import Vector2Int
+from statistic import Statistic
 
 if TYPE_CHECKING:
     from actor import Actor
@@ -38,8 +39,12 @@ class World:
     deserialize: Deserialize
     respawning: Player
     log: bool
+    train: bool
+    statistic: Statistic
+    generationNumber: int
+    individualNumber: int
 
-    def __init__(self, size: Vector2Int, deserialize: Deserialize, log=False):
+    def __init__(self, size: Vector2Int, deserialize: Deserialize, log=False, train=False):
         self.size = size
 
         self.grid = [[[] for _ in range(size.y)] for _ in range(size.x)]
@@ -53,6 +58,8 @@ class World:
         self.lives = 3
         self.deserialize = deserialize
         self.log = log
+        self.train = train
+        self.statistic = Statistic()
 
     def update(self, tickRate: int):
         if self.gameState is not GameState.LOST and self.gameState is not GameState.WON:
@@ -98,7 +105,10 @@ class World:
         return self.grid[position.x][position.y]
 
     def addScore(self, score: Reward, multiplier=1.0):
-        self.score += score.value * multiplier
+        value = score.value*multiplier
+        self.score += value
+        if self.train:
+            self.statistic.addPoint(value, score)
         if self.log:
             print('Wynik:', self.score)
 
