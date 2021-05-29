@@ -23,7 +23,9 @@ class Tracker:
             generacja.append(stats.data)
         if generationNumber >= self.genCounter:
             self.genCounter += 1
-        self.data.append(generacja)
+            self.data[generationNumber] = generacja
+        else:
+            self.data.append(generacja)
 
     def load(self):
         f = open(self.fileName, "r")

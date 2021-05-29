@@ -11,22 +11,20 @@ def createPieChart():
         tracker.load()
         points = 0
         powerUps = 0
-        deaths = 0
         ghosts = 0
         time = 0
         for gen in tracker.data:
                 for ind in gen:
                         points += ind['pointsPoints']
                         powerUps += ind['pointsPowerUps']
-                        deaths += ind['pointsDeaths']
                         ghosts += ind['pointsGhosts']
                         time += ind['pointsTime']
 
         fig = plt.figure()
         ax = fig.add_axes([0, 0, 1, 1])
         ax.axis('equal')
-        labels = ['Points', 'PowerUps', 'Time', 'Deaths', 'Ghosts']
-        students = [points,powerUps,time,deaths,ghosts]
+        labels = ['Points', 'PowerUps', 'Time', 'Ghosts']
+        students = [points,powerUps,time,ghosts]
         ax.pie(students, labels=labels, autopct='%1.2f%%')
         plt.show()
 if __name__ == '__main__':
