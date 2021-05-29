@@ -7,11 +7,9 @@ from statistic import Statistic
 
 class Tracker:
     data: list
-    genCounter: int
     #fileName : string nie ma w annotations?
 
     def __init__(self, fileName):
-        self.genCounter = 0
         self.data = []
         self.fileName = fileName
 
@@ -21,8 +19,7 @@ class Tracker:
         for i in range(statisticList.__len__()):
             stats = statisticList[i]
             generacja.append(stats.data)
-        if generationNumber >= self.genCounter:
-            self.genCounter += 1
+        if generationNumber < len(self.data):
             self.data[generationNumber] = generacja
         else:
             self.data.append(generacja)
