@@ -117,6 +117,7 @@ class World:
         self.addScore(Reward.DEATH)
         if self.lives <= 0:
             self.gameState = GameState.LOST
+            self.statistic.setTime(self.time)
         else:
             self.respawning = player
             self.removeActor(player)
@@ -144,6 +145,7 @@ class World:
             if self.pointsRemaining == 0:
                 self.gameState = GameState.WON
                 self.addScore(Reward.TIME_REMAINING, (self.timeLimit - self.time))
+                self.statistic.setTime(self.time)
         if isinstance(entity, PowerUp):
             self.gameState = GameState.PSYCHODELIC
             if self.log:

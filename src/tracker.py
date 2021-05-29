@@ -6,27 +6,27 @@ from statistic import Statistic
 
 
 class Tracker:
-    data: dict
-    genCounter: int
+    data: list
     #fileName : string nie ma w annotations?
 
     def __init__(self, fileName):
-        self.genCounter = 0
-        self.data = {}
+        self.data = []
         self.fileName = fileName
 
-    def addGeneration(self, statisticList: list[Statistic]):
-        name = 'gen'+str(self.genCounter)
+    def setGeneration(self, statisticList: list[Statistic], generationNumber: int):
 
-        self.data[name] = {}
+        generacja = []
         for i in range(statisticList.__len__()):
             stats = statisticList[i]
-            self.data[name]['ind'+str(i)] = stats.data
-        self.genCounter += 1
+            generacja.append(stats.data)
+        if generationNumber < len(self.data):
+            self.data[generationNumber] = generacja
+        else:
+            self.data.append(generacja)
 
-
-
-
+    def load(self):
+        f = open(self.fileName, "r")
+        self.data = json.load(f)
 
     def saveData(self):
         with open(self.fileName, 'w') as outfile:
