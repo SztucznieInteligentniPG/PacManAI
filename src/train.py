@@ -40,9 +40,9 @@ def runTraining():
         with multiprocessing.Pool(cpus) as pool:
             # scores = pool.map(app.trainPlayer, population)
             result = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
-        scores = [item.data['total'] for item in result]
+        scores = [item.data['pointsTotal'] for item in result]
         statistics = result
-        tracker.addGeneration(statistics)
+        tracker.setGeneration(statistics, generation)
         print(
             'Generation', generation + 1, 'over;',
             'Population count:', scores.__len__(), ';',
