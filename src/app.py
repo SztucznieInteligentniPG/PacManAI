@@ -81,10 +81,10 @@ def trainPlayer(weights: list, seed: int) -> ([int, Statistic]):
 
     deserialize = Deserialize(
             AiController(weights),
-            RandomController(2, seed),
-            RandomController(2, seed + 1),
-            RandomController(2, seed + 2),
-            RandomController(2, seed + 3),
+            RandomController(1, seed),
+            RandomController(1, seed + 1),
+            RandomController(1, seed + 2),
+            RandomController(1, seed + 3),
         )
     world = World(Vector2Int(19, 19), deserialize, train=True,)
     world.loadGrid()
