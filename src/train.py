@@ -64,9 +64,14 @@ def runTraining():
             savingModel.save_weights('./training/' + trainingStart + '/best')
             maxScore = scores[maxIndex]
 
+        for i in range(population.__len__()):
+            savingModel.set_weights(population[i])
+            savingModel.save_weights('./training/' + trainingStart + '/specimen_' + str(i))
+
         population = genetic.newGeneration(population, scores, elite, mutationRate)
 
         tracker.saveData()
+
 
 if __name__ == '__main__':
     # Wyłączenie wkurzających wiadomości

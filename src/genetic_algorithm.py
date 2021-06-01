@@ -14,6 +14,10 @@ def initialPopulation(size) -> list:
 
 
 def sortedProbabilities(scores: list) -> dict:
+    minimum = min(scores)
+    if minimum < 0:
+        scores = list(map(lambda x: x - minimum + 1, scores))
+
     totalScore = reduce(lambda x, y: x + y, scores)
     probabilities = enumerate(map(lambda x: x / totalScore, scores))
 
