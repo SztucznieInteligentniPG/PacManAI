@@ -7,37 +7,57 @@ from tensorflow.keras import layers
 def create():
     return keras.Sequential([
         keras.Input(shape=(19, 19, 10)),
-        layers.Conv2D(32, 3, activation='relu'),
-        layers.MaxPooling2D(2),
-        layers.Conv2D(32, 3, activation='relu'),
-        layers.MaxPooling2D(2),
-        layers.Conv2D(32, 3, activation='relu'),
+        # layers.Conv2D(32, 3, activation='relu'),
+        # layers.MaxPooling2D(2),
+        # layers.Conv2D(32, 3, activation='relu'),
+        # layers.MaxPooling2D(2),
+        # layers.Conv2D(32, 3, activation='relu'),
+        # layers.Flatten(),
+        # layers.Dense(16, activation='relu'),
+        # layers.Dense(4, activation='relu'),
+
+        layers.Conv2D(32, 3, activation='relu', padding='same', bias_initializer='random_uniform'),
+        layers.Conv2D(32, 3, activation='relu', padding='same', bias_initializer='random_uniform'),
+        layers.MaxPool2D(2),
+        layers.Conv2D(64, 3, activation='relu', bias_initializer='random_uniform'),
+        layers.Conv2D(64, 3, activation='relu', bias_initializer='random_uniform'),
+        layers.MaxPool2D(2),
         layers.Flatten(),
-        layers.Dense(16, activation='relu'),
-        layers.Dense(4, activation='relu'),
+        layers.Dense(32, activation='relu', bias_initializer='random_uniform'),
+        layers.Dense(4, activation='softmax', bias_initializer='random_uniform')
     ])
 
 
 def crossover(parent1: list, parent2: list) -> list:
     # shape - (x, y, previousLayer (Count), nextLayer (Count))
-    child = [
-        np.zeros((3, 3, 10, 32)),
-        np.zeros(32),
-        np.zeros((3, 3, 32, 32)),
-        np.zeros(32),
-        np.zeros((3, 3, 32, 32)),
-        np.zeros(32),
-        np.zeros((32, 16)),
-        np.zeros(16),
-        np.zeros((16, 4)),
-        np.zeros(4),
-    ]
+    # child = [
+    #     np.zeros((3, 3, 10, 32)),
+    #     np.zeros(32),
+    #     np.zeros((3, 3, 32, 32)),
+    #     np.zeros(32),
+    #     np.zeros((3, 3, 32, 32)),
+    #     np.zeros(32),
+    #     np.zeros((32, 16)),
+    #     np.zeros(16),
+    #     np.zeros((16, 4)),
+    #     np.zeros(4),
+    # ]
+    child = list(map(lambda x: np.zeros(x.shape), parent1))
 
-    crossConvolutionLayers(child, parent1, parent2, 0)
-    crossConvolutionLayers(child, parent1, parent2, 2)
-    crossConvolutionLayers(child, parent1, parent2, 4)
-    crossDenseLayers(child, parent1, parent2, 6)
-    crossDenseLayers(child, parent1, parent2, 8)
+    for layer in range(child.__len__()):
+        dimensions = child[layer].shape.__len__()
+        if dimensions == 4:
+            crossConvolutionLayers(child, parent1, parent2, layer)
+        elif dimensions == 2:
+            crossDenseLayers(child, parent1, parent2, layer)
+        elif dimensions == 1:
+            crossBiasLayers(child, parent1, parent2, layer)
+
+    # crossConvolutionLayers(child, parent1, parent2, 0)
+    # crossConvolutionLayers(child, parent1, parent2, 2)
+    # crossConvolutionLayers(child, parent1, parent2, 4)
+    # crossDenseLayers(child, parent1, parent2, 6)
+    # crossDenseLayers(child, parent1, parent2, 8)
 
     return child
 
@@ -58,6 +78,17 @@ def crossDenseLayers(child: list, parent1: list, parent2: list, layer: int):
         for nL in range(child[layer].shape[1]):
             parent = random.choice([parent1, parent2])
             child[layer][pL][nL] = parent[layer][pL][nL]
+
+
+def crossBiasLayers(child: list, parent1: list, parent2: list, layer: int):
+    # shape - (bias (Count))
+    crossoverPoint = random.randint(1, child[layer].shape[0])
+    parents = [parent1, parent2]
+    startParent = random.choice([0, 1])
+
+    for i in range(child[layer].shape[0]):
+        parent = startParent if i < crossoverPoint else 1 - startParent
+        child[layer][i] = parents[parent][layer][i]
 
 
 def mutate(weights: list, mutation_rate: float) -> list:
@@ -86,3 +117,11 @@ def mutateDenseLayers(weights: list, mutation_rate: float, layer: int):
         for nL in range(weights[layer].shape[1]):
             if random.random() < mutation_rate:
                 weights[layer][pL][nL] = random.uniform(-1, 1)
+
+
+if __name__ == '__main__':
+    model = create()
+    model.summary()
+
+    shapes = list(map(lambda x: x.shape, model.get_weights()))
+    print(model.get_weights()[3])
