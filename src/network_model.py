@@ -92,11 +92,14 @@ def crossBiasLayers(child: list, parent1: list, parent2: list, layer: int):
 
 
 def mutate(weights: list, mutation_rate: float) -> list:
-    mutateConvolutionLayers(weights, mutation_rate, 0)
-    mutateConvolutionLayers(weights, mutation_rate, 2)
-    mutateConvolutionLayers(weights, mutation_rate, 4)
-    mutateDenseLayers(weights, mutation_rate, 6)
-    mutateDenseLayers(weights, mutation_rate, 8)
+    for layer in range(weights.__len__()):
+        dimensions = weights[layer].shape.__len__()
+        if dimensions == 4:
+            mutateConvolutionLayers(weights, mutation_rate, layer)
+        elif dimensions == 2:
+            mutateDenseLayers(weights, mutation_rate, layer)
+        elif dimensions == 1:
+            mutateBiasLayers(weights, mutation_rate, layer)
 
     return weights
 
@@ -117,6 +120,12 @@ def mutateDenseLayers(weights: list, mutation_rate: float, layer: int):
         for nL in range(weights[layer].shape[1]):
             if random.random() < mutation_rate:
                 weights[layer][pL][nL] = random.uniform(-1, 1)
+
+
+def mutateBiasLayers(weights: list, mutation_rate: float, layer: int):
+    for i in range(weights[layer].shape[0]):
+        if random.random() < mutation_rate:
+            weights[layer][i] = random.uniform(-1, 1)
 
 
 if __name__ == '__main__':
