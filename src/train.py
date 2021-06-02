@@ -22,7 +22,10 @@ def runTraining():
     print("Processors detected: ", cpus)
 
     trainingStart = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
+    # trainingStart = "2021-06-02_07_56_49"
     tracker = Tracker('./statistics/' + trainingStart)
+
+    # tracker.load()
 
     print('Generating population...')
     start = time.time()
@@ -32,11 +35,22 @@ def runTraining():
     maxScore = 0
     savingModel = network_model.create()
 
+    # for i in range(population.__len__()):
+    #     savingModel.load_weights('./training/' + trainingStart + '/specimen_' + str(i))
+    #     population[i] = savingModel.get_weights()
+
+    seedChangePeriod = 1000
+    seedChangeCounter = 1000
+
     for generation in range(generations):
         print('Generation', generation + 1, 'start')
         start = time.time()
 
-        seed = random.randint(0, 9223372036854775807)
+        if seedChangeCounter >= seedChangePeriod:
+            # seed = random.randint(0, 9223372036854775807)
+            seed = 5094695156037544247
+            seedChangeCounter = 0
+
         with multiprocessing.Pool(cpus) as pool:
             # scores = pool.map(app.trainPlayer, population)
             result = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
@@ -71,6 +85,7 @@ def runTraining():
         population = genetic.newGeneration(population, scores, elite, mutationRate)
 
         tracker.saveData()
+        seedChangeCounter += 1
 
 
 if __name__ == '__main__':
