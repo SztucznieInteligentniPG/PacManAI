@@ -47,8 +47,7 @@ def runTraining():
         start = time.time()
 
         if seedChangeCounter >= seedChangePeriod:
-            # seed = random.randint(0, 9223372036854775807)
-            seed = 5094695156037544247
+            seed = random.randint(0, 9223372036854775807)
             seedChangeCounter = 0
 
         with multiprocessing.Pool(cpus) as pool:
