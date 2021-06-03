@@ -16,15 +16,25 @@ def create():
         # layers.Dense(16, activation='relu'),
         # layers.Dense(4, activation='relu'),
 
-        layers.Conv2D(32, 3, activation='relu', padding='same', bias_initializer='random_uniform'),
-        layers.Conv2D(32, 3, activation='relu', padding='same', bias_initializer='random_uniform'),
+        # layers.Conv2D(32, 3, activation='relu', padding='same', bias_initializer='random_uniform'),
+        # layers.Conv2D(32, 3, activation='relu', padding='same', bias_initializer='random_uniform'),
+        # layers.MaxPool2D(2),
+        # layers.Conv2D(64, 3, activation='relu', bias_initializer='random_uniform'),
+        # layers.Conv2D(64, 3, activation='relu', bias_initializer='random_uniform'),
+        # layers.MaxPool2D(2),
+        # layers.Flatten(),
+        # layers.Dense(32, activation='relu', bias_initializer='random_uniform'),
+        # layers.Dense(4, activation='softmax', bias_initializer='random_uniform')
+
+        layers.Conv2D(32, 3, activation='tanh', padding='same', bias_initializer='random_uniform'),
+        layers.Conv2D(32, 3, activation='tanh', padding='same', bias_initializer='random_uniform'),
         layers.MaxPool2D(2),
-        layers.Conv2D(64, 3, activation='relu', bias_initializer='random_uniform'),
-        layers.Conv2D(64, 3, activation='relu', bias_initializer='random_uniform'),
+        layers.Conv2D(64, 3, activation='tanh', bias_initializer='random_uniform'),
+        layers.Conv2D(64, 3, activation='tanh', bias_initializer='random_uniform'),
         layers.MaxPool2D(2),
         layers.Flatten(),
-        layers.Dense(32, activation='relu', bias_initializer='random_uniform'),
-        layers.Dense(4, activation='softmax', bias_initializer='random_uniform')
+        layers.Dense(32, activation='tanh', bias_initializer='random_uniform'),
+        layers.Dense(4, activation='sigmoid', bias_initializer='random_uniform')
     ])
 
 
