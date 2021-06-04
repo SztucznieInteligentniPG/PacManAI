@@ -14,9 +14,9 @@ from tracker import Tracker
 def runTraining():
     import app
 
-    populationSize = 100
-    generations = 1000
-    elite = 10
+    populationSize = 700
+    generations = 120
+    elite = 60
     mutationRate = 1 / 110000
     cpus = multiprocessing.cpu_count()
     print("Processors detected: ", cpus)
@@ -34,13 +34,17 @@ def runTraining():
 
     maxScore = 0
     savingModel = network_model.create()
+    #trainingStart = '2021-06-01_13_32_45'
+    #for i in range(population.__len__()):
+     #    savingModel.load_weights('./training/' + trainingStart + '/specimen_' + str(i))
+      #   population[i] = savingModel.get_weights()
 
     # for i in range(population.__len__()):
     #     savingModel.load_weights('./training/' + trainingStart + '/specimen_' + str(i))
     #     population[i] = savingModel.get_weights()
 
-    seedChangePeriod = 1000
-    seedChangeCounter = 1000
+    seedChangePeriod = 20
+    seedChangeCounter = 20
 
     for generation in range(generations):
         print('Generation', generation + 1, 'start')
