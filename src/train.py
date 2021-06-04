@@ -22,7 +22,7 @@ def runTraining():
     print("Processors detected: ", cpus)
 
     trainingStart = datetime.now().strftime("%Y-%m-%d_%H_%M_%S")
-    # trainingStart = "2021-06-02_07_56_49"
+    # trainingStart = "2021-06-03_13_52_15"
     tracker = Tracker('./statistics/' + trainingStart)
 
     # tracker.load()
@@ -40,7 +40,7 @@ def runTraining():
     #     population[i] = savingModel.get_weights()
 
     seedChangePeriod = 1000
-    seedChangeCounter = 1000
+    seedChangeCounter = seedChangePeriod
 
     for generation in range(generations):
         print('Generation', generation + 1, 'start')
@@ -51,11 +51,12 @@ def runTraining():
             seedChangeCounter = 0
 
         with multiprocessing.Pool(cpus) as pool:
-            # scores = pool.map(app.trainPlayer, population)
             result = pool.starmap(app.trainPlayer, zip(population, repeat(seed)))
+
         scores = [item.data['pointsTotal'] for item in result]
         statistics = result
-        tracker.setGeneration(statistics, generation)
+        tracker.setGeneration(statistics, generation, seed)
+
         print(
             'Generation', generation + 1, 'over;',
             'Population count:', scores.__len__(), ';',

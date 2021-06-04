@@ -13,16 +13,16 @@ class Tracker:
         self.data = []
         self.fileName = fileName
 
-    def setGeneration(self, statisticList: list[Statistic], generationNumber: int):
-
-        generacja = []
+    def setGeneration(self, statisticList: list[Statistic], generationNumber: int, seed: int):
+        generation = {"seed": seed, "population": []}
         for i in range(statisticList.__len__()):
             stats = statisticList[i]
-            generacja.append(stats.data)
+            generation["population"].append(stats.data)
+
         if generationNumber < len(self.data):
-            self.data[generationNumber] = generacja
+            self.data[generationNumber] = generation
         else:
-            self.data.append(generacja)
+            self.data.append(generation)
 
     def load(self):
         f = open(self.fileName, "r")

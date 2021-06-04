@@ -61,8 +61,8 @@ def crossover(population: list, elite: int) -> list:
     return children
 
 
-def mutation(population: list, mutationRate: float) -> list:
-    for i in range(population.__len__()):
+def mutation(population: list, mutationRate: float, elite: int) -> list:
+    for i in range(elite, population.__len__()):
         population[i] = network_model.mutate(population[i], mutationRate)
 
     return population
@@ -71,6 +71,6 @@ def mutation(population: list, mutationRate: float) -> list:
 def newGeneration(population: list, scores: list, elite: int, mutationRate: float) -> list:
     population = selection(population, scores, elite)
     population = crossover(population, elite)
-    population = mutation(population, mutationRate)
+    population = mutation(population, mutationRate, elite)
 
     return population
