@@ -16,7 +16,7 @@ class ChartsGenerator:
         ghosts = 0
         time = 0
         for gen in self.tracker.data:
-            for ind in gen:
+            for ind in gen['population']:
                 points += ind['pointsPoints']
                 powerUps += ind['pointsPowerUps']
                 ghosts += ind['pointsGhosts']
@@ -34,11 +34,16 @@ class ChartsGenerator:
         deathCount=[]
         for gen in self.tracker.data:
             sum=0
-            for ind in gen:
+            for ind in gen['population']:
                 sum += ind['deaths']
-            deathCount.append(sum)
+            deathCount.append(sum / gen['population'].__len__())
 
-        plt.plot(range(len(deathCount)),deathCount,'ro')
+        X = range(1, deathCount.__len__() + 1)
+        z = np.polyfit(X, deathCount, 10)
+        p = np.poly1d(z)
+
+        plt.plot(X,p(X),"b--")
+        plt.plot(X,deathCount,'r')
         plt.show()
 
     def createStackedChart(self):
@@ -52,15 +57,15 @@ class ChartsGenerator:
             powerUps = 0
             ghosts = 0
             time = 0
-            for ind in gen:
-                points += ind['pointsPoints']
-                powerUps += ind['pointsPowerUps']
-                ghosts += ind['pointsGhosts']
+            for ind in gen['population']:
+                points += ind['pointsPoints'] + ind['pointsPowerUps'] + ind['pointsGhosts'] + ind['pointsTime']
+                powerUps += ind['pointsPowerUps'] + ind['pointsGhosts'] + ind['pointsTime']
+                ghosts += ind['pointsGhosts'] + ind['pointsTime']
                 time += ind['pointsTime']
-            pointsData.append(points/500)
-            powerUpsData.append(powerUps/500)
-            ghostsData.append(ghosts/500)
-            timeData.append(time/500)
+            pointsData.append(points/gen['population'].__len__())
+            powerUpsData.append(powerUps/gen['population'].__len__())
+            ghostsData.append(ghosts/gen['population'].__len__())
+            timeData.append(time/gen['population'].__len__())
         width = 1
         fig, ax = plt.subplots()
         ax.bar(range(len(pointsData)), pointsData, width, label='Points')
@@ -81,16 +86,16 @@ class ChartsGenerator:
         avgPoints = []
         for gen in self.tracker.data:
             points = 0
-            min = gen[0]['pointsTotal']
-            max = gen[0]['pointsTotal']
-            for ind in gen:
+            min = gen['population'][0]['pointsTotal']
+            max = gen['population'][0]['pointsTotal']
+            for ind in gen['population']:
                 points += ind['pointsTotal']
                 if ind['pointsTotal'] < min:
                     min = ind['pointsTotal']
 
                 if ind['pointsTotal'] > max:
                     max = ind['pointsTotal']
-            avgPoints.append(points/500)
+            avgPoints.append(points/gen['population'].__len__())
             minPoints.append(min)
             maxPoints.append(max)
         width = 1
@@ -104,7 +109,7 @@ class ChartsGenerator:
         width = (1 - spacing) / values.shape[0]
         heights0 = values[0]
         for i, heights in enumerate(values):
-            style = {'fill': False} if i == 0 else {'edgecolor': 'black'}
+            style = {'fill': False} if i == 0 else {'edgecolor': 'lightgreen'}
             rects = ax.bar(x - spacing / 2 + i * width, heights - heights0,
                            width, bottom=heights0, **style)
         ax.set_ylabel('Scores')
