@@ -11,3 +11,4 @@ class Vector2Int:
 class Vector2Float:
     x: float
     y: float
+

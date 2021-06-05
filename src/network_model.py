@@ -123,7 +123,7 @@ def crossoverCut(parent1: list, parent2: list) -> (list, list):
     serializedParent1 = serializeParent(parent1)
     serializedParent2 = serializeParent(parent2)
 
-    crossoverPointsCount = crossoverPoint = random.randint(int(len(serializedParent1)/100000),int(len(serializedParent1)/1000) )
+    crossoverPointsCount = crossoverPoint = random.randint(2,20 )
     crossoverPoints = []
     for i in range(crossoverPointsCount):
         crossoverPoints.append(random.randint(1, len(serializedParent1)))
@@ -170,7 +170,7 @@ def deserializeChild(child:list, serialized:list):
             child, serialized = deserializeDenseLayers(child, serialized, layer)
         elif dimensions == 1:
             child, serialized = deserializeBiasLayers(child, serialized, layer)
-        return child
+    return child
 
 def serializeConvolutionLayers(serializedParent: list, parent: list, layer: int):
     # shape - (x, y, previousLayer (Count), nextLayer (Count))

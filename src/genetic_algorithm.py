@@ -51,13 +51,21 @@ def crossover(population: list, elite: int) -> list:
     for i in range(elite):
         children.append(population[i])
 
+    '''
     for _ in range(population.__len__() - elite):
         parent1 = random.choice(population)
         parent2 = random.choice(population)
 
         child = network_model.crossover(parent1, parent2)
         children.append(child)
+    '''
+    for _ in range(int((population.__len__() - elite)/2)):
+        parent1 = random.choice(population)
+        parent2 = random.choice(population)
 
+        child1, child2 = network_model.crossoverCut(parent1, parent2)
+        children.append(child1)
+        children.append(child2)
     return children
 
 

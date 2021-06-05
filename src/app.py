@@ -4,6 +4,10 @@ import sys
 import time
 
 from ai_controller import AiController
+from blinkie_controller import BlinkieController
+from pinkie_controller import PinkieController
+from inkie_controller import InkieController
+from clyde_controller import ClydeController
 from deserialize import Deserialize
 from game_state import GameState
 import network_model
@@ -27,18 +31,22 @@ def main():
 
     renderer = Renderer(display)
 
-    model = network_model.create()
-    model.load_weights('./training/best')
+    #model = network_model.create()
+    #model.load_weights('./training/best')
     seed = 1
 
     playerController = PlayerController()
     deserialize = Deserialize(
-            # playerController,
-            AiController(model.get_weights()),
-            RandomController(1, seed),
-            RandomController(1, seed + 1),
-            RandomController(1, seed + 2),
-            RandomController(1, seed + 3),
+            playerController,
+            #AiController(model.get_weights()),
+            #RandomController(1, seed),
+            PinkieController(1),
+            BlinkieController(1),
+            InkieController(1),
+            ClydeController(1),
+            #RandomController(1, seed + 1),
+            #RandomController(1, seed + 2),
+            #RandomController(1, seed + 3),
         )
     world = World(Vector2Int(19, 19), deserialize, True)
     world.loadGrid()
@@ -81,10 +89,14 @@ def trainPlayer(weights: list, seed: int) -> ([int, Statistic]):
 
     deserialize = Deserialize(
             AiController(weights),
-            RandomController(1, seed),
-            RandomController(1, seed + 1),
-            RandomController(1, seed + 2),
-            RandomController(1, seed + 3),
+            #RandomController(1, seed),
+            #RandomController(1, seed + 1),
+            #RandomController(1, seed + 2),
+            #RandomController(1, seed + 3),
+            PinkieController(1),
+            BlinkieController(1),
+            InkieController(1),
+            ClydeController(1),
         )
     world = World(Vector2Int(19, 19), deserialize, train=True,)
     world.loadGrid()
