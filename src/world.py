@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import copy
 import json
 import math
 import numpy as np
@@ -13,6 +15,7 @@ from statistic import Statistic
 
 if TYPE_CHECKING:
     from actor import Actor
+    from blinkie_controller import BlinkieController
     from deserialize import Deserialize
     from enemy import Enemy
     from entity import Entity
@@ -88,6 +91,19 @@ class World:
         self.actors.append(actor)
         self.putEntity(actor, position)
 
+    def getPacman(self):
+        from player import Player
+        for entity in self.actors:
+            if isinstance(entity, Player):
+                return entity
+    def getBlinkiePosition(self):
+        from blinkie_controller import BlinkieController
+        from enemy import Enemy
+        for entity in self.actors:
+            if isinstance(entity, Enemy):
+                if isinstance(entity.controller, BlinkieController):
+                    return entity.worldPosition
+
     def removeActor(self, actor: Actor):
         if self.actors.__contains__(actor):
             self.actors.remove(actor)
@@ -100,6 +116,12 @@ class World:
         entity.worldPosition = position
         if isinstance(entity, Point):
             self.pointsRemaining += 1
+
+    def countDistance(self, positionA: Vector2Int, positionB: Vector2Int):
+        a = copy.copy(positionA)
+        b = copy.copy(positionB)
+        sum = (b.x-a.x)**2+(b.y-a.y)**2
+        return sum
 
     def getEntities(self, position: Vector2Int) -> list[Entity]:
         return self.grid[position.x][position.y]
@@ -184,6 +206,8 @@ class World:
 
     def loadGrid(self):
         from actor import Actor
+        from blinkie_controller import BlinkieController
+        from enemy import Enemy
         f = open("map.txt", "r")
         data = json.load(f)
         grid = data["grid"]
@@ -193,6 +217,8 @@ class World:
                 place = grid[i][j]
                 for entityCode in place:
                     entity = self.deserialize.deserialize(entityCode)
+                    if isinstance(entity, Enemy):
+                        entity.controller.setGhost(entity,self)
                     if isinstance(entity, Actor):
                         self.putActor(entity, Vector2Int(j, i))
                     elif isinstance(entity, Blockade):

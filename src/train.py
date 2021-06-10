@@ -14,9 +14,9 @@ from tracker import Tracker
 def runTraining():
     import app
 
-    populationSize = 100
-    generations = 1000
-    elite = 10
+    populationSize = 500
+    generations = 200
+    elite = 30
     mutationRate = 1 / 110000
     cpus = multiprocessing.cpu_count()
     print("Processors detected: ", cpus)
